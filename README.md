@@ -26,10 +26,15 @@ An online tool for fluent and creative novel translation using Google's Gemini A
 ## **How to Use**
 
 1.  **Open the Tool**: Navigate to [https://asterlywin.github.io/Nora/](https://asterlywin.github.io/Nora/).
+
 2.  **Enter API Key**: In the settings section, paste your Google Gemini API key. You can obtain a key from [Google AI Studio](https://aistudio.google.com/app/apikey).
+
 3.  **Provide Text**: Paste the novel text you want to translate into the input box, or click the link button to paste the novel's webpage URL.
+
 4.  **Configure Settings (Optional)**: If needed, adjust the settings, including the AI model.
+
 5.  **Translate**: Click the **"Submit"** button to begin the process.
+
 6.  **Read**: Once the translation is complete, you can easily read the final text.
 
 ---
@@ -63,8 +68,12 @@ An online tool for fluent and creative novel translation using Google's Gemini A
 ## **نحوه استفاده**
 
 ۱. **باز کردن ابزار**: به آدرس [https://asterlywin.github.io/Nora/](https://asterlywin.github.io/Nora/) بروید.
+
 ۲. **وارد کردن کلید API**: در بخش تنظیمات، کلید API گوگل Gemini خود را وارد کنید. برای دریافت کلید می‌توانید به [Google AI Studio](https://aistudio.google.com/app/apikey) مراجعه کنید.
+
 ۳. **وارد کردن متن**: متن ناولی که قصد ترجمه آن را دارید، در کادر ورودی جایگذاری کنید. یا لینک صفحه ناول رو با زدن دکمه لینک جایگذاری کنید.
+
 ۴. **پیکربندی تنظیمات (اختیاری)**: در صورت نیاز، تنظیمات شامل مدل هوش مصنوعی را تغییر دهید.
 ۵. **ترجمه**: روی دکمه **«ارسال»** کلیک کنید تا فرآیند آغاز شود.
+
 ۶. **خواندن**: پس از اتمام ترجمه، می‌توانید متن نهایی را به راحتی مطالعه کنید.
