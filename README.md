@@ -1,41 +1,5 @@
 # Nora: Online Novel Translator with Gemini AI
 
-An online tool for fluent and creative novel translation using Google's Gemini AI. This tool allows you to translate long texts by splitting them into chunks, giving you full control over the translation process.
-
----
-
-## **Live Demo**
-
-**You can access the live version of this tool here:**
-**[https://asterlywin.github.io/Nora/](https://asterlywin.github.io/Nora/)**
-
----
-
-## **Features**
-
-*   **Extract Text from Link**: Automatically extracts novel content by providing a URL and detects the next chapter for you.
-*   **Creative Translation**: Utilizes Google's Gemini AI for high-quality, fluent translations suitable for novels.
-*   **Client-Side Processing**: Your API key is stored and processed only in your browser for enhanced privacy.
-*   **Text Chunking**: Splits long texts into smaller, manageable chunks for better control and reliability.
-*   **Local API Key Storage**: Option to save your API key in the browser's local storage for convenience.
-*   **Manual Retry**: Manually retry any chunks that fail to translate.
-
----
-
-## **How to Use**
-
-1.  **Open the Tool**: Navigate to [https://asterlywin.github.io/Nora/](https://asterlywin.github.io/Nora/).
-2.  **Enter API Key**: In the settings section, paste your Google Gemini API key. You can obtain a key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-3.  **Input Text**: Paste the novel text you want to translate into the input box. Alternatively, click the link button to paste the URL of the novel's page.
-4.  **Configure Settings (Optional)**: If needed, adjust the settings, including the AI model.
-5.  **Translate**: Click the **"Submit"** button to begin the process.
-6.  **Read**: Once the translation is complete, you can easily read the final text.
-
----
----
-
-# Nora: Online Novel Translator with Gemini AI
-
 An online tool for fluent and creative novel translation using Google's Gemini AI. This tool allows you to translate long texts by splitting them into chunks and gives you full control over the translation process.
 
 ---
