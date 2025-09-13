@@ -7,7 +7,7 @@
     <style>
         @font-face { font-family: 'Iran Yekan'; src: url('Fonts/Iran Yekan medium.ttf') format('truetype'); font-weight: bold; font-style: normal; }
         @font-face { font-family: 'San Francisco Bold'; src: url('Fonts/San Francisco Bold.ttf') format('truetype'); font-weight: bold; font-style: normal; }
-        html, body { margin: 0; padding: 0; width: 100%; height: 100vh; overflow: hidden; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100dvh; overflow: hidden; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
         textarea, input { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
         .main { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .main.reading-mode { background-color: #202020; }
@@ -89,7 +89,7 @@
         .url-button svg { width: 20px; height: 20px; }
         .url-window { position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); width: 80%; max-width: 300px; padding: 8px; border-radius: 8px; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); display: none; z-index: 10; background-color: #21262d; opacity: 0; }
         .url-window.open { display: block; opacity: 1; }
-        .url-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #30363d; color: #ffffff; }
+        .url-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #30363d; color: #ffffff; box-sizing: border-box; }
         .menu-button { position: static; background-color: #2563eb; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; }
         .menu-button.hidden { opacity: 0; pointer-events: none; }
         .menu-button:hover { background-color: #4a8bff; }
@@ -121,7 +121,7 @@
         .settings-window, .dictionary-window { width: 100%; max-width: 180px; margin: 0 auto 15px; padding: 8px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); border: 1px solid #30363d; display: none; background-color: #21262d; opacity: 0; }
         .settings-window.open, .dictionary-window.open { display: block; opacity: 1; }
         .settings-container { display: flex; flex-direction: column; gap: 15px; }
-        .settings-window input, .dictionary-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; text-align: center; background-color: #30363d; color: #ffffff; }
+        .settings-window input, .dictionary-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; text-align: center; background-color: #30363d; color: #ffffff; box-sizing: border-box; }
         .ai-model-selection { display: flex; flex-direction: column; gap: 10px; }
         .ai-name { font-size: 16px; margin: 0; color: #c9d1d9; }
         .model-option { display: flex; flex-direction: column; }
@@ -1136,7 +1136,54 @@ Now, provide the new, updated summary in Persian.`;
         function searchChats(query) { const chatItems = document.querySelectorAll('.chat-item'); chatItems.forEach(item => { const chatId = parseInt(item.getAttribute('data-chat-id')); const chat = chats.find(c => c.id === chatId); const title = chat.title.toLowerCase(); if (title.includes(query.toLowerCase())) item.classList.remove('hidden'); else item.classList.add('hidden'); }); }
         function findScrollAnchor() { const chatArea = document.getElementById('chat-area'); const chatAreaRect = chatArea.getBoundingClientRect(); const messageGroups = chatArea.querySelectorAll('.message-group'); let firstVisibleGroup = null; for (const group of messageGroups) { const groupRect = group.getBoundingClientRect(); if (groupRect.bottom > chatAreaRect.top && groupRect.top < chatAreaRect.bottom) { firstVisibleGroup = group; break; } } if (!firstVisibleGroup) return null; const groupRect = firstVisibleGroup.getBoundingClientRect(); const distanceScrolledIntoElement = chatAreaRect.top - groupRect.top; let scrollPercentage = 0; if (distanceScrolledIntoElement > 0) scrollPercentage = distanceScrolledIntoElement / groupRect.height; return { element: firstVisibleGroup, percentage: scrollPercentage }; }
         function restoreScrollPosition(anchor) { if (!anchor || !anchor.element) return; const chatArea = document.getElementById('chat-area'); const element = anchor.element; const elementTopRelativeToContainer = element.offsetTop; const newPixelOffset = element.offsetHeight * anchor.percentage; chatArea.scrollTop = elementTopRelativeToContainer + newPixelOffset; }
-        function toggleReadingMode() { const main = document.getElementById('main'); const readingModeButton = document.getElementById('reading-mode-button'); const anchor = findScrollAnchor(); readingMode = !readingMode; const eyeIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52159 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; const eyeSlashIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99902 3L20.999 21M9.8433 9.91364C9.32066 10.4536 8.99902 11.1892 8.99902 12C8.99902 13.6569 10.3422 15 11.999 15C12.8215 15 13.5667 14.669 14.1086 14.133M6.49902 6.64715C4.59972 7.90034 3.15305 9.78394 2.45703 12C3.73128 16.0571 7.52159 19 11.9992 19C13.9881 19 15.8414 18.4194 17.3988 17.4184M10.999 5.04939C11.328 5.01673 11.6617 5 11.9992 5C16.4769 5 20.2672 7.94291 21.5414 12C21.2607 12.894 20.8577 13.7338 20.3522 14.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; readingModeButton.innerHTML = readingMode ? eyeIconSVG : eyeSlashIconSVG; readingModeButton.title = readingMode ? 'خروج از حالت مطالعه' : 'حالت مطالعه'; readingModeButton.classList.toggle('active', readingMode); main.classList.toggle('reading-mode', readingMode); requestAnimationFrame(() => { restoreScrollPosition(anchor); }); }
+        function toggleReadingMode() {
+            const main = document.getElementById('main');
+            const readingModeButton = document.getElementById('reading-mode-button');
+            const anchor = findScrollAnchor();
+            readingMode = !readingMode;
+            
+            function enterFullScreen() {
+                const elem = document.documentElement;
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.mozRequestFullScreen) { /* Firefox */
+                    elem.mozRequestFullScreen();
+                } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                    elem.webkitRequestFullscreen();
+                } else if (elem.msRequestFullscreen) { /* IE/Edge */
+                    elem.msRequestFullscreen();
+                }
+            }
+
+            function exitFullScreen() {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            const eyeIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52159 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            const eyeSlashIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99902 3L20.999 21M9.8433 9.91364C9.32066 10.4536 8.99902 11.1892 8.99902 12C8.99902 13.6569 10.3422 15 11.999 15C12.8215 15 13.5667 14.669 14.1086 14.133M6.49902 6.64715C4.59972 7.90034 3.15305 9.78394 2.45703 12C3.73128 16.0571 7.52159 19 11.9992 19C13.9881 19 15.8414 18.4194 17.3988 17.4184M10.999 5.04939C11.328 5.01673 11.6617 5 11.9992 5C16.4769 5 20.2672 7.94291 21.5414 12C21.2607 12.894 20.8577 13.7338 20.3522 14.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+            readingModeButton.innerHTML = readingMode ? eyeIconSVG : eyeSlashIconSVG;
+            readingModeButton.title = readingMode ? 'خروج از حالت مطالعه' : 'حالت مطالعه';
+            readingModeButton.classList.toggle('active', readingMode);
+            main.classList.toggle('reading-mode', readingMode);
+
+            if (readingMode) {
+                enterFullScreen();
+            } else {
+                exitFullScreen();
+            }
+            
+            requestAnimationFrame(() => {
+                restoreScrollPosition(anchor);
+            });
+        }
         function deleteMessageGroup(messageId) { const chatArea = document.getElementById('chat-area'); const messageElement = chatArea.querySelector(`.user-message[data-message-id="${messageId}"]`); if (!messageElement) return; activeTranslations.forEach((trans, id) => { if (trans.messageGroup.getAttribute('data-group-id') == messageId) trans.controller.abort(); }); const messageGroup = messageElement.closest('.message-group'); chatArea.removeChild(messageGroup); const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { const messageIndex = currentChat.messages.findIndex(msg => msg.id === messageId); if (messageIndex !== -1) { currentChat.messages.splice(messageIndex, 2); saveChats(); } } }
         function toggleUrlWindow() { const urlWindow = document.getElementById('url-window'); const urlInput = document.getElementById('url-input'); const currentChat = chats.find(chat => chat.id === currentChatId); if (urlWindow.classList.contains('open')) { saveUrl(); urlWindow.classList.remove('open'); updateTextareaAccess(); } else { urlWindow.classList.add('open'); urlInput.value = currentChat && currentChat.url ? currentChat.url : ''; urlInput.focus(); } }
         function saveUrl() { const urlInput = document.getElementById('url-input'); const link = urlInput.value.trim(); const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.url = link; saveChats(); } }
