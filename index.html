@@ -57,7 +57,7 @@
             border-radius: 24px;
             outline: none;
             resize: none;
-            height: 50px;
+            min-height: 50px;
             max-height: 400px;
             font-size: 14px;
             line-height: 1.5;
@@ -78,12 +78,11 @@
             opacity: 0.7;
             text-align: right;
         }
-        .input-area .send-button { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .input-area .send-button { position: absolute; right: 8px; bottom: 7px; width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .input-area .send-button:hover { background-color: #4a8bff; }
         .send-button svg { width: 20px; height: 20px; }
         .input-area .send-button:disabled { background-color: #6b7280; cursor: not-allowed; }
-        .input-area .url-button { position: absolute; left: 8px; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .input-wrapper.has-text .send-button, .input-wrapper.has-text .url-button { top: auto; bottom: 8px; transform: none; }
+        .input-area .url-button { position: absolute; left: 8px; bottom: 7px; width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .input-area .url-button:disabled { background-color: #6b7280; cursor: not-allowed; }
         .input-area .url-button:hover { background-color: #4a8bff; }
         .url-button svg { width: 20px; height: 20px; }
@@ -172,10 +171,15 @@
         .about-us-content { display: flex; flex-direction: column; align-items: center; padding: 20px; background-color: #21262d; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); margin: 20px auto; max-width: 100%; width: 100%; box-sizing: border-box; text-align: center; }
         .about-us-title { font-size: 18px; font-weight: bold; color: #ffffff; margin-bottom: 15px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
         .about-us-text { font-size: 14px; color: #c9d1d9; line-height: 1.6; margin-bottom: 20px; padding: 0 10px; text-align: right; width: 100%; box-sizing: border-box; }
-        .telegram-link { display: inline-flex; align-items: center; padding: 12px 16px; background-color: #0088cc; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: bold; transition: background-color 0.3s; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); white-space: nowrap; }
-        .telegram-link:hover { background-color: #00aaff; animation: pulse 0.8s ease-in-out; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
-        .telegram-icon { width: 20px; height: 20px; margin-left: 8px; }
+        .about-us-links { display: flex; flex-direction: column; align-items: stretch; gap: 10px; width: 100%; }
+        .telegram-link, .github-link { display: flex; align-items: center; justify-content: center; padding: 12px 16px; color: #ffffff; text-decoration: none; border-radius: 8px; font-size: 14px; font-weight: bold; transition: background-color 0.3s, transform 0.2s; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); white-space: nowrap; }
+        .telegram-link:hover, .github-link:hover { transform: translateY(-2px); }
+        .telegram-link { background-color: #0088cc; }
+        .telegram-link:hover { background-color: #00aaff; }
+        .github-link { background-color: #333; }
+        .github-link:hover { background-color: #555; }
+        .telegram-icon, .github-icon { width: 20px; height: 20px; margin-right: 8px; }
+        .github-icon { fill: white; }
 
         .ai-message-actions,
         .user-message-actions {
@@ -496,15 +500,25 @@
                 <div class="about-us-content" style="display: none;">
                     <h2 class="about-us-title">درباره ما</h2>
                     <p class="about-us-text">
-                        در «Nora»، هدف ما ارائه ترجمه‌ای دقیق، روان و کاربرپسند برای داستان‌ها و متون شماست. ما تلاش می‌کنیم تا با حفظ لحن و احساسات اصلی، تجربه‌ای لذت‌بخش از خواندن به زبان فارسی برایتان فراهم آوریم.<br><br>برای اطلاع از آخرین اخبار و به‌روزرسانی‌ها، به کانال تلگرام ما بپیوندید و عضوی از جامعه رو به رشد ما باشید!
+                        در «Nora»، هدف ما ارائه ترجمه‌ای دقیق، روان و کاربرپسند برای داستان‌ها و متون شماست. ما تلاش می‌کنیم تا با حفظ لحن و احساسات اصلی، تجربه‌ای لذت‌بخش از خواندن به زبان فارسی برایتان فراهم آوریم.
+                        <br><br>
+                        این یک پروژه اجتماعی است! برای اطلاع از آخرین اخبار و به‌روزرسانی‌ها به کانال تلگرام ما بپیوندید و برای مشارکت در توسعه، مشاهده کد منبع یا گزارش مشکلات از پروژه گیت‌هاب ما دیدن کنید.
                     </p>
-                    <a href="https://t.me/Nora_App" target="_blank" class="telegram-link">
-                        <svg class="telegram-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                           <path d="M2.99997 9.80005L21 3.00005L14.2 21L10.2 13.8L2.99997 9.80005Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                           <path d="M21 3L10.2 13.8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <span>پیوستن به کانال تلگرام</span>
-                    </a>
+                    <div class="about-us-links">
+                        <a href="https://t.me/Nora_App" target="_blank" class="telegram-link">
+                            <span> کانال تلگرام</span>
+                            <svg class="telegram-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                               <path d="M2.99997 9.80005L21 3.00005L14.2 21L10.2 13.8L2.99997 9.80005Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                               <path d="M21 3L10.2 13.8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </a>
+                        <a href="https://github.com/AsterLywin/Nora" target="_blank" class="github-link">
+                            <span>پروژه در گیت‌هاب</span>
+                            <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -840,6 +854,8 @@ Now, provide the new, updated summary in Persian.`;
             currentChat.messages.push({ type: 'ai', text: 'در حال پردازش...' });
             saveChats();
             textarea.value = '';
+            textarea.style.direction = 'rtl';
+            textarea.style.textAlign = 'right';
             resetTextareaHeight();
             updateTextareaAccess();
 
@@ -1207,8 +1223,15 @@ Now, provide the new, updated summary in Persian.`;
         function toggleMenu() { const sidebar = document.getElementById('sidebar'); const menuButton = document.querySelector('.menu-button'); const isOpen = sidebar.classList.contains('open'); sidebar.classList.toggle('open'); menuButton.classList.toggle('hidden', !isOpen); if (!isOpen && aboutUsActive) toggleAboutUs(); }
         const textarea = document.querySelector('.input-area textarea');
         const initialTextareaHeight = '50px';
-        function adjustTextareaHeight() { const textarea = document.querySelector('.input-area textarea'); const wrapper = textarea.parentElement; textarea.style.height = 'auto'; if (textarea.scrollHeight > parseInt(initialTextareaHeight)) textarea.style.height = `${Math.min(textarea.scrollHeight, 400)}px`; else textarea.style.height = initialTextareaHeight; if (textarea.value.trim()) wrapper.classList.add('has-text'); else resetTextareaHeight(); }
-        function resetTextareaHeight() { const textarea = document.querySelector('.input-area textarea'); const wrapper = textarea.parentElement; textarea.style.height = initialTextareaHeight; wrapper.classList.remove('has-text'); }
+        function adjustTextareaHeight() {
+            const textarea = document.querySelector('.input-area textarea');
+            textarea.style.height = initialTextareaHeight;
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+        function resetTextareaHeight() {
+            const textarea = document.querySelector('.input-area textarea');
+            textarea.style.height = initialTextareaHeight;
+        }
         
         function toggleUserMessageMenu(event, buttonElement) {
             event.stopPropagation();
