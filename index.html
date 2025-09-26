@@ -30,7 +30,7 @@
         .message-group:not(:last-child)::after { content: ''; display: block; width: 95%; height: 2px; background-color: #484f58; margin: 10px auto 0; }
         .message { margin-bottom: 5px; line-height: 1.5; position: relative; display: block; width: fit-content; }
         
-        .user-message { font-family: 'San Francisco Bold', sans-serif; padding: 10px 15px; background-color: #2563eb; color: #ffffff; border-radius: 16px; max-width: 70%; font-size: 14px; white-space: pre-wrap; }
+        .user-message { font-family: 'San Francisco Bold', sans-serif; padding: 10px 15px; background-color: #2563eb; color: #ffffff; border-radius: 16px; max-width: 70%; font-size: 14px; white-space: pre-wrap; word-break: break-all; }
         .user-message.rtl { margin-left: auto; margin-right: 0; text-align: right; }
         .user-message.ltr { margin-right: auto; margin-left: 0; text-align: left; }
         
@@ -155,7 +155,7 @@
         .dictionary-submit.delete:hover { background-color: #f44336; }
         .dictionary-submit svg { width: 20px; height: 20px; }
         .search-bar { margin-bottom: 20px; }
-        .search-bar input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #21262d; color: #ffffff; }
+        .search-bar input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #21262d; color: #ffffff; box-sizing: border-box; }
         .chat-item { display: flex; align-items: center; padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; background-color: #21262d; cursor: move; user-select: none; }
         .chat-item.hidden { display: none; }
         .chat-item:hover { background-color: #30363d; }
@@ -697,15 +697,29 @@
             const response = await fetch(apiUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal });
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData?.error?.message || `خطای API با کد ${response.status}`);
+                const errorMessage = errorData?.error?.message || `خطای ناشناخته با کد ${response.status}`;
+                switch (response.status) {
+                    case 400:
+                        throw new Error("درخواست ارسال شده به مدل هوش مصنوعی ناقص یا اشتباه است. این مشکل معمولاً به دلیل وجود کاراکترهای نامعتبر در متن است.");
+                    case 403:
+                        throw new Error("کلید API وارد شده نامعتبر است یا دسترسی لازم را ندارد. لطفاً تنظیمات را بررسی کنید.");
+                    case 429:
+                        throw new Error("تعداد درخواست‌ها به سرور هوش مصنوعی بیش از حد مجاز بوده است. لطفاً کمی صبر کرده و دوباره تلاش کنید.");
+                    case 500:
+                        throw new Error("یک خطای داخلی در سرور هوش مصنوعی رخ داده است. ممکن است متن شما بیش از حد طولانی باشد یا مشکل موقتی باشد.");
+                    case 503:
+                        throw new Error("سرویس هوش مصنوعی در حال حاضر در دسترس نیست یا بیش از حد شلوغ است. لطفاً چند دقیقه دیگر دوباره امتحان کنید.");
+                    default:
+                        throw new Error(`خطای API: ${errorMessage}`);
+                }
             }
             const data = await response.json();
             if (data.candidates && data.candidates.length > 0) {
                 if (data.candidates[0].finishReason === 'MAX_TOKENS') console.warn('Translation stopped due to MAX_TOKENS limit.');
-                if (data.candidates[0].finishReason === 'SAFETY') throw new Error("ترجمه به دلیل فعال شدن فیلترهای ایمنی گوگل متوقف شد.");
+                if (data.candidates[0].finishReason === 'SAFETY') throw new Error("ترجمه به دلیل فعال شدن فیلترهای ایمنی گوگل متوقف شد. لطفاً متن را بررسی و در صورت نیاز اصلاح کنید.");
             }
             const translatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!translatedText) throw new Error("پاسخ دریافتی از API خالی یا نامعتبر است.");
+            if (!translatedText) throw new Error("پاسخ دریافتی از API خالی یا نامعتبر است. ممکن است سرور با مشکل مواجه شده باشد.");
             return translatedText;
         }
 
@@ -733,7 +747,7 @@ Now, provide the new, updated summary in Persian.`;
             }
         }
 
-        async function translateWithGemini(textToTranslate, dictionary, apiKey, modelName, signal, progressCallback, currentChat) {
+        async function translateWithGemini(textToTranslate, dictionary, apiKey, modelName, signal, progressCallback, currentChat, userMessageId) {
             if (!apiKey) throw new Error("کلید API در تنظیمات وارد نشده است.");
             let dictText = "دیکشنری خالیه";
             if (dictionary && Object.keys(dictionary).length > 0) {
@@ -758,10 +772,18 @@ Now, provide the new, updated summary in Persian.`;
             let translatedChunks = [];
             let lastTranslatedText = '';
             const totalChunks = Math.ceil(paragraphs.length / CHUNK_SIZE);
+            currentChat.translationCache = currentChat.translationCache || {};
+            currentChat.translationCache[userMessageId] = currentChat.translationCache[userMessageId] || [];
 
             for (let i = 0; i < totalChunks; i++) {
                 if (signal.aborted) throw new Error("عملیات توسط کاربر لغو شد.");
                 if (progressCallback) progressCallback(i + 1, totalChunks);
+                
+                if (currentChat.translationCache[userMessageId] && currentChat.translationCache[userMessageId][i]) {
+                    translatedChunks.push(currentChat.translationCache[userMessageId][i]);
+                    lastTranslatedText = currentChat.translationCache[userMessageId][i];
+                    continue;
+                }
                 
                 const chunkStart = i * CHUNK_SIZE;
                 const chunkEnd = chunkStart + CHUNK_SIZE;
@@ -776,6 +798,8 @@ Now, provide the new, updated summary in Persian.`;
                 
                 try {
                     const translatedChunk = await _callGeminiAPI(chunkPrompt, apiKey, modelName, signal);
+                    currentChat.translationCache[userMessageId][i] = translatedChunk;
+                    saveChats();
                     translatedChunks.push(translatedChunk);
                     lastTranslatedText = translatedChunk;
                     if (!signal.aborted) {
@@ -787,6 +811,8 @@ Now, provide the new, updated summary in Persian.`;
                 }
             }
             
+            delete currentChat.translationCache[userMessageId];
+            saveChats();
             return translatedChunks.join('\n\n');
         }
 
@@ -882,7 +908,7 @@ Now, provide the new, updated summary in Persian.`;
                 }
                 aiMessage.firstChild.textContent = 'ترجمه در حال آماده‌سازی... ';
                 const dictionaryObject = currentChat.dictionary.reduce((acc, entry) => { acc[entry.en] = entry.fa; return acc; }, {});
-                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat);
+                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat, userMessageId);
 
                 if (nextUrlToUpdate) {
                     urlInput.value = nextUrlToUpdate;
@@ -918,8 +944,7 @@ Now, provide the new, updated summary in Persian.`;
                     const translation = activeTranslations.get(translationId);
                     if (translation && translation.chatId === currentChatId) {
                         const aiMsgElement = translation.messageGroup.querySelector('.ai-message');
-                        aiMsgElement.classList.remove('loading');
-                        aiMsgElement.classList.add('error');
+                        aiMsgElement.className = 'message ai-message rtl error';
                         aiMsgElement.innerHTML = '';
                         const errorMessageBdi = document.createElement('bdi');
                         errorMessageBdi.textContent = `خطا: ${error.message}`;
@@ -1104,7 +1129,7 @@ Now, provide the new, updated summary in Persian.`;
 
                 aiMessageElement.firstChild.textContent = 'ترجمه در حال بازسازی... ';
                 const dictionaryObject = currentChat.dictionary.reduce((acc, entry) => { acc[entry.en] = entry.fa; return acc; }, {});
-                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat);
+                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat, userMessageId);
 
                 if (activeTranslations.has(translationId)) {
                     const translatedDirectionClass = isRTL(translatedText) ? 'rtl' : 'ltr';
@@ -1123,8 +1148,7 @@ Now, provide the new, updated summary in Persian.`;
             } catch (error) {
                 if (error.name === 'AbortError') console.log('Regeneration aborted.');
                 else if (activeTranslations.has(translationId)) {
-                    aiMessageElement.classList.remove('loading');
-                    aiMessageElement.classList.add('error');
+                    aiMessageElement.className = 'message ai-message rtl error';
                     aiMessageElement.innerHTML = '';
                     const errorMessageBdi = document.createElement('bdi');
                     errorMessageBdi.textContent = `خطا: ${error.message}`;
