@@ -1295,11 +1295,17 @@ Now, provide the new, updated summary in Persian.`;
         document.getElementById('url-input').addEventListener('input', updateTextareaAccess);
         document.addEventListener('DOMContentLoaded', () => { renderChatList(); if (chats.length > 0) { loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); } else updateTextareaAccess(); resetTextareaHeight(); });
 
-		  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/Nora/service-worker.js');
-    });
-  }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/Nora/service-worker.js')
+            .then(registration => {
+              console.log('Nora PWA ServiceWorker registered successfully.');
+            })
+            .catch(err => {
+              console.error('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
     </script>
 </body>
 </html>
