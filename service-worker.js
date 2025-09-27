@@ -1,7 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'nora-cache-v1.2.2'; 
-
+const CACHE_NAME = 'nora-cache-v1.2.3';
 const urlsToCache = [
   './',
   './index.html',
@@ -17,7 +16,7 @@ self.addEventListener('install', event => {
     caches.open(CACHE_NAME).then(cache => {
       console.log('Opened cache and caching files');
       return cache.addAll(urlsToCache);
-    })
+    }).then(() => self.skipWaiting())
   );
 });
 
@@ -39,8 +38,8 @@ self.addEventListener('activate', event => {
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
