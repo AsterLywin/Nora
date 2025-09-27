@@ -7,8 +7,8 @@ const urlsToCache = [
   '/Nora/index.html',
   '/Nora/favicon.ico',
   '/Nora/manifest.json',
-  '/Nora/icons/icon-192x192.png',
-  '/Nora/icons/icon-512x512.png',
+  '/Nora/Icons/icon-192x192.png',
+  '/Nora/Icons/icon-512x512.png',
   '/Nora/Fonts/Iran Yekan Medium.ttf',
   '/Nora/Fonts/San Francisco bold.ttf'
 ];
