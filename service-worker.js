@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'nora-cache-v4';
+const CACHE_NAME = 'nora-cache-v1.2.0';
 
 const urlsToCache = [
   '/Nora/',
