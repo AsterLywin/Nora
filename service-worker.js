@@ -5,7 +5,6 @@ const CACHE_NAME = 'nora-cache-v1.2.1';
 const urlsToCache = [
   './',
   './index.html',
-  './favicon.ico',
   './manifest.json',
   './Icons/icon-192x192.png',
   './Icons/icon-512x512.png',
