@@ -1085,7 +1085,21 @@ Now, provide the new, updated summary in Persian.`;
         function updateTextareaAccess() { const urlInput = document.getElementById('url-input'); const textarea = document.querySelector('.input-area textarea'); const urlButton = document.querySelector('.url-button'); const sendButton = document.querySelector('.send-button'); if (textarea.value.trim()) { textarea.disabled = false; textarea.placeholder = 'متنت رو اینجا بنویس...'; urlButton.disabled = true; sendButton.disabled = false; } else if (urlInput.value.trim()) { textarea.disabled = true; textarea.placeholder = 'وقتی لینک وارد شده، نمی‌تونی اینجا بنویسی!'; urlButton.disabled = false; sendButton.disabled = false; } else { textarea.disabled = false; textarea.placeholder = 'متنت رو اینجا بنویس...'; urlButton.disabled = false; sendButton.disabled = true; } }
         function toggleSettingsWindow() { const settingsWindow = document.getElementById('settings-window'); const apiKeyInput = document.getElementById('api-key-input'); if (settingsWindow.classList.contains('open')) { saveSettingsData(); settingsWindow.classList.remove('open'); } else { settingsWindow.classList.add('open'); apiKeyInput.value = settings.apiKey || ''; if(document.getElementById(settings.selectedModel)) document.getElementById(settings.selectedModel).checked = true; apiKeyInput.focus(); document.querySelectorAll('.radio-wrapper').forEach(wrapper => { wrapper.addEventListener('click', function() { const input = this.querySelector('input[type="radio"]'); if (input && !input.checked) { input.checked = true; saveSettingsData(); } }); }); } }
         function saveSettingsData() { const apiKeyInput = document.getElementById('api-key-input'); const selectedModelInput = document.querySelector('input[name="ai-model"]:checked'); settings.apiKey = apiKeyInput.value.trim(); if(selectedModelInput) settings.selectedModel = selectedModelInput.value; saveSettings(); }
-        function toggleDictionaryWindow() { dictionaryActive = !dictionaryActive; const dictionaryWindow = document.getElementById('dictionary-window'); const dictionaryButton = document.querySelector('.dictionary-button'); dictionaryButton.classList.toggle('active', dictionaryActive); if (dictionaryActive) { dictionaryWindow.classList.add('open'); renderDictionary(); } else dictionaryWindow.classList.remove('open'); }
+        
+        function toggleDictionaryWindow() {
+            if (chats.length === 0) createNewChat();
+            dictionaryActive = !dictionaryActive;
+            const dictionaryWindow = document.getElementById('dictionary-window');
+            const dictionaryButton = document.querySelector('.dictionary-button');
+            dictionaryButton.classList.toggle('active', dictionaryActive);
+            if (dictionaryActive) {
+                dictionaryWindow.classList.add('open');
+                renderDictionary();
+            } else {
+                dictionaryWindow.classList.remove('open');
+            }
+        }
+        
         function toggleAboutUs() { aboutUsActive = !aboutUsActive; const sidebarMain = document.querySelector('.sidebar-main'); const aboutUsContent = document.querySelector('.about-us-content'); const aboutUsButton = document.querySelector('.about-us-button'); aboutUsButton.classList.toggle('active', aboutUsActive); if (aboutUsActive) { sidebarMain.style.display = 'none'; aboutUsContent.style.display = 'flex'; } else { sidebarMain.style.display = 'block'; aboutUsContent.style.display = 'none'; } }
         
         function renderDictionary() {
@@ -1106,7 +1120,7 @@ Now, provide the new, updated summary in Persian.`;
             entriesDiv.appendChild(fragment);
         }
 
-        function submitDictionaryEntry() { const enInput = document.getElementById('dict-input-en'); const faInput = document.getElementById('dict-input-fa'); const enText = enInput.value.trim(); const faText = faInput.value.trim(); enInput.classList.remove('error'); faInput.classList.remove('error'); if (!enText || !faText) { if (!enText) enInput.classList.add('error'); if (!faText) faInput.classList.add('error'); return; } const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { if (editingDictEntry !== null) { currentChat.dictionary[editingDictEntry] = { en: enText, fa: faText }; editingDictEntry = null; } else currentChat.dictionary.push({ en: enText, fa: faText }); saveChatsDebounced(); renderDictionary(); enInput.value = ''; faInput.value = ''; } }
+        function submitDictionaryEntry() { if (chats.length === 0) createNewChat(); const enInput = document.getElementById('dict-input-en'); const faInput = document.getElementById('dict-input-fa'); const enText = enInput.value.trim(); const faText = faInput.value.trim(); enInput.classList.remove('error'); faInput.classList.remove('error'); if (!enText || !faText) { if (!enText) enInput.classList.add('error'); if (!faText) faInput.classList.add('error'); return; } const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { if (editingDictEntry !== null) { currentChat.dictionary[editingDictEntry] = { en: enText, fa: faText }; editingDictEntry = null; } else { currentChat.dictionary.push({ en: enText, fa: faText }); } saveChatsDebounced(); renderDictionary(); enInput.value = ''; faInput.value = ''; } }
         function editDictionaryEntry(index) { const currentChat = chats.find(chat => chat.id === currentChatId); const entry = currentChat.dictionary[index]; const enInput = document.getElementById('dict-input-en'); const faInput = document.getElementById('dict-input-fa'); enInput.value = entry.en; faInput.value = entry.fa; editingDictEntry = index; }
         function deleteDictionaryEntry(index) { const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.dictionary.splice(index, 1); saveChatsDebounced(); renderDictionary(); } }
         function copyDictionary() { const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat && currentChat.dictionary.length > 0) { const text = `Dictionary ID: DICT_001\n` + currentChat.dictionary.map(entry => `${entry.en} - ${entry.fa}`).join('\n'); navigator.clipboard.writeText(text).then(() => showNotification('دیکشنری با موفقیت کپی شد.', 'success')).catch(err => showNotification('خطا در کپی کردن دیکشنری.', 'error')); } }
