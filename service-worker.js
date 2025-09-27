@@ -1,37 +1,47 @@
 'use strict';
 
-const CACHE_NAME = 'nora-cache-v1.2.0';
+const CACHE_NAME = 'nora-cache-v1.2.1'; 
 
 const urlsToCache = [
-  '/Nora/',
-  '/Nora/index.html',
-  '/Nora/favicon.ico',
-  '/Nora/manifest.json',
-  '/Nora/Icons/icon-192x192.png',
-  '/Nora/Icons/icon-512x512.png',
-  '/Nora/Fonts/Iran Yekan Medium.ttf',
-  '/Nora/Fonts/San Francisco bold.ttf'
+  './',
+  './index.html',
+  './favicon.ico',
+  './manifest.json',
+  './Icons/icon-192x192.png',
+  './Icons/icon-512x512.png',
+  './Fonts/Iran%20Yekan%20Medium.ttf',
+  './Fonts/San%20Francisco%20bold.ttf'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Opened cache and caching files');
+      return cache.addAll(urlsToCache);
+    })
+  );
 });
 
 self.addEventListener('activate', event => {
   const cacheWhitelist = [CACHE_NAME];
-  event.waitUntil(caches.keys().then(cacheNames => {
-    return Promise.all(
-      cacheNames.map(cacheName => {
-        if (cacheWhitelist.indexOf(cacheName) === -1) {
-          return caches.delete(cacheName);
-        }
-      })
-    );
-  }));
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            console.log('Deleting old cache:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
 });
 
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => response || fetch(event.request))
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request);
+    })
   );
 });
