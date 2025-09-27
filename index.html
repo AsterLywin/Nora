@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Nora App</title>
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#3a3a3a">
     <style>
-		@font-face { font-family: 'Iran Yekan'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/Iran%20Yekan%20Medium.ttf') format('truetype'); font-weight: bold; font-style: normal; }
-		@font-face { font-family: 'San Francisco Bold'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/San%20Francisco%20bold.ttf') format('truetype'); font-weight: bold; font-style: normal; }
+		@font-face { font-family: 'Iran Yekan'; src: url('/Nora/Fonts/Iran%20Yekan%20Medium.ttf') format('truetype'); font-weight: bold; font-style: normal; }
+		@font-face { font-family: 'San Francisco Bold'; src: url('/Nora/Fonts/San%20Francisco%20bold.ttf') format('truetype'); font-weight: bold; font-style: normal; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100dvh; overflow: hidden; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
         textarea, input { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
         .main { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
@@ -1292,6 +1294,12 @@ Now, provide the new, updated summary in Persian.`;
         document.querySelector('.input-area textarea').addEventListener('keydown', function(e) { if (e.ctrlKey && e.key === 'Enter') sendMessage(); });
         document.getElementById('url-input').addEventListener('input', updateTextareaAccess);
         document.addEventListener('DOMContentLoaded', () => { renderChatList(); if (chats.length > 0) { loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); } else updateTextareaAccess(); resetTextareaHeight(); });
+
+		  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/Nora/service-worker.js');
+    });
+  }
     </script>
 </body>
 </html>
