@@ -3,45 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Nora App</title>
-	<link rel="manifest" href="manifest.json">
-	<meta name="theme-color" content="#3a3a3a">
+    <title>Nora - AI Writing Assistant</title>
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#3a3a3a">
     <style>
-		@font-face { font-family: 'Iran Yekan'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/Iran%20Yekan%20Medium.ttf') format('truetype'); font-weight: bold; font-style: normal; }
-		@font-face { font-family: 'San Francisco Bold'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/San%20Francisco%20bold.ttf') format('truetype'); font-weight: bold; font-style: normal; }
+        @font-face { font-family: 'Iran Yekan'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/Iran%20Yekan%20Medium.ttf') format('truetype'); font-weight: bold; font-style: normal; }
+        @font-face { font-family: 'San Francisco Bold'; src: url('https://raw.githubusercontent.com/AsterLywin/Nora/main/Fonts/San%20Francisco%20bold.ttf') format('truetype'); font-weight: bold; font-style: normal; }
         html, body { margin: 0; padding: 0; width: 100%; height: 100dvh; overflow: hidden; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
         textarea, input { -webkit-user-select: text; -moz-user-select: text; -ms-user-select: text; user-select: text; }
         .main { width: 100%; height: 100%; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .main.reading-mode { background-color: #202020; }
         .top-bar { display: flex; align-items: center; padding: 5px 15px; position: absolute; top: 0; left: 0; right: 0; height: 30px; background-color: #161b22; border-bottom: 2px solid #484f58; z-index: 15; box-sizing: content-box; }
-        .chat-area { flex: 1; width: 100%; height: 100%; padding: 20px; padding-top: 72px; overflow-y: auto; scroll-padding-top: 72px; display: flex; flex-direction: column; box-sizing: border-box; }
+        .chat-area { flex: 1; width: 100%; height: 100%; padding: 20px; padding-top: 72px; padding-bottom: 80px; overflow-y: auto; scroll-padding-top: 72px; display: flex; flex-direction: column; box-sizing: border-box; }
         .message-group { margin-bottom: 20px; display: flex; flex-direction: column; width: 100%; position: relative; }
         .message-group:not(:last-child)::after { content: ''; display: block; width: 95%; height: 2px; background-color: #484f58; margin: 10px auto 0; }
         .message { margin-bottom: 5px; line-height: 1.5; position: relative; display: block; width: fit-content; }
-        .user-message { font-family: 'San Francisco Bold', sans-serif; padding: 10px 15px; background-color: #2563eb; color: #ffffff; border-radius: 16px; max-width: 70%; font-size: 14px; white-space: pre-wrap; word-break: break-all; }
-        .user-message.rtl { margin-left: auto; margin-right: 0; text-align: right; }
-        .user-message.ltr { margin-right: auto; margin-left: 0; text-align: left; }
         .ai-message { width: 80%; margin: 0 auto 5px; font-family: 'San Francisco Bold', sans-serif; font-size: 16px; white-space: pre-wrap; box-sizing: border-box; }
         .ai-message.rtl { text-align: right; }
         .ai-message.ltr { text-align: left; }
         .ai-message.loading::after { content: ''; display: inline-block; width: 12px; height: 12px; border: 2px solid #2563eb; border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 8px; vertical-align: middle; }
         .loading-timer { margin-right: 5px; font-weight: bold; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .input-area { padding: 15px; border-top: 1px solid #30363d; position: relative; }
-        .input-wrapper { position: relative; display: flex; align-items: flex-end; }
-        .input-area textarea { width: 100%; padding: 14px 50px; border: none; border-radius: 24px; outline: none; resize: none; min-height: 50px; max-height: 400px; font-size: 14px; line-height: 1.5; word-spacing: normal; scroll-behavior: smooth; white-space: pre-wrap; direction: rtl; font-family: 'Iran Yekan', sans-serif; text-align: right; overflow-y: auto; background-color: #21262d; color: #ffffff; box-sizing: border-box; }
-        .input-area textarea::placeholder { font-size: 14px; color: #8b949e; opacity: 0.7; text-align: right; }
-        .input-area .send-button { position: absolute; right: 8px; bottom: 7px; width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .input-area { position: absolute; bottom: 0; left: 0; right: 0; pointer-events: none; }
+        .input-wrapper { display: flex; justify-content: flex-start; padding: 15px 20px; }
+        .input-area .send-button { width: 50px; height: 50px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25); transition: background-color 0.2s; pointer-events: auto; }
         .input-area .send-button:hover { background-color: #4a8bff; }
-        .send-button svg { width: 20px; height: 20px; }
+        .send-button svg { width: 24px; height: 24px; }
         .input-area .send-button:disabled { background-color: #6b7280; cursor: not-allowed; }
-        .input-area .url-button { position: absolute; left: 8px; bottom: 7px; width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .input-area .url-button:disabled { background-color: #6b7280; cursor: not-allowed; }
-        .input-area .url-button:hover { background-color: #4a8bff; }
-        .url-button svg { width: 20px; height: 20px; }
-        .url-window { position: absolute; bottom: calc(100% + 5px); left: 50%; transform: translateX(-50%); width: 80%; max-width: 300px; padding: 8px; border-radius: 8px; box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2); display: none; z-index: 10; background-color: #21262d; opacity: 0; }
-        .url-window.open { display: block; opacity: 1; }
-        .url-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #30363d; color: #ffffff; box-sizing: border-box; }
         .menu-button { position: static; background-color: #2563eb; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; }
         .menu-button.hidden { opacity: 0; pointer-events: none; }
         .menu-button:hover { background-color: #4a8bff; }
@@ -55,25 +43,28 @@
         .sidebar { position: absolute; top: 0; right: -100%; width: 50%; height: 100%; padding: 15px; border-left: 1px solid #30363d; transition: right 0.3s ease, visibility 0.3s; visibility: hidden; z-index: 20; background-color: #161b22; }
         .sidebar.open { right: 0; visibility: visible; }
         .sidebar h2 { font-size: 16px; margin: 10px 0 15px; font-weight: normal; color: #c9d1d9; }
-        .sidebar-actions { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 10px; }
-        .sidebar-actions button { width: 30px; height: 30px; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .sidebar-actions .new-chat-button { background-color: #2563eb; }
-        .sidebar-actions .new-chat-button:hover { background-color: #4a8bff; }
+        .sidebar-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(35px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        .sidebar-actions button { width: 100%; height: 35px; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .sidebar-actions .prompt-button,
+        .sidebar-actions .upload-button,
+        .sidebar-actions .new-chat-button,
+        .sidebar-actions .settings-button,
+        .sidebar-actions .about-us-button { background-color: #2563eb; }
+        .sidebar-actions .prompt-button:hover,
+        .sidebar-actions .upload-button:hover,
+        .sidebar-actions .new-chat-button:hover,
+        .sidebar-actions .settings-button:hover,
+        .sidebar-actions .about-us-button:hover { background-color: #4a8bff; }
+        .sidebar-actions .prompt-button svg,
+        .sidebar-actions .upload-button svg { stroke: #ffffff; }
         .sidebar-actions .clear-chat-button { background-color: #d32f2f; }
         .sidebar-actions .clear-chat-button:hover { background-color: #f44336; }
-        .sidebar-actions .settings-button { background-color: #2563eb; }
-        .sidebar-actions .settings-button:hover { background-color: #4a8bff; }
-        .sidebar-actions .dictionary-button { background-color: #2563eb; }
-        .sidebar-actions .dictionary-button:hover { background-color: #4a8bff; }
-        .sidebar-actions .dictionary-button.active { opacity: 0.6; }
-        .sidebar-actions .about-us-button { background-color: #2563eb; }
-        .sidebar-actions .about-us-button:hover { background-color: #4a8bff; }
         .sidebar-actions .about-us-button.active { opacity: 0.6; }
         .sidebar-actions button svg { width: 20px; height: 20px; }
-        .settings-window, .dictionary-window { width: 100%; max-width: 180px; margin: 0 auto 15px; padding: 8px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); border: 1px solid #30363d; display: none; background-color: #21262d; opacity: 0; }
-        .settings-window.open, .dictionary-window.open { display: block; opacity: 1; }
+        .settings-window { width: 100%; max-width: 180px; margin: 0 auto 15px; padding: 8px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); border: 1px solid #30363d; display: none; background-color: #21262d; opacity: 0; }
+        .settings-window.open { display: block; opacity: 1; }
         .settings-container { display: flex; flex-direction: column; gap: 15px; }
-        .settings-window input, .dictionary-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; text-align: center; background-color: #30363d; color: #ffffff; box-sizing: border-box; }
+        .settings-window input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; text-align: center; background-color: #30363d; color: #ffffff; box-sizing: border-box; }
         .ai-model-selection { display: flex; flex-direction: column; gap: 10px; }
         .ai-name { font-size: 16px; margin: 0; color: #c9d1d9; }
         .model-option { display: flex; flex-direction: column; }
@@ -85,28 +76,6 @@
         .radio-wrapper input[type="radio"]:checked + label { color: #2563eb; }
         .model-description { font-size: 12px; color: #8b949e; margin: 5px 0 0 24px; text-align: right; }
         .model-separator { border: 0; height: 1px; background-color: #30363d; margin: 5px 0; }
-        .dictionary-entries { max-height: 150px; overflow-y: auto; margin-bottom: 10px; }
-        .dictionary-entry { display: flex; justify-content: space-between; align-items: center; padding: 5px; border: 1px solid #30363d; border-radius: 5px; margin-bottom: 5px; }
-        .dictionary-entry .text { flex-grow: 1; cursor: pointer; }
-        .dictionary-entry span { font-size: 12px; }
-        .delete-dict-btn { background: none; border: none; cursor: pointer; padding: 0 5px; }
-        .delete-dict-btn svg { width: 16px; height: 16px; stroke: #d32f2f; }
-        .dictionary-inputs { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
-        .dictionary-inputs input { flex: 1; }
-        .dictionary-inputs input.error { border: 1px solid #d32f2f; box-shadow: inset 0 0 5px rgba(211, 47, 47, 0.5); }
-        .dictionary-inputs span { font-size: 14px; }
-        .dictionary-actions { display: flex; justify-content: flex-start; gap: 10px; margin-bottom: 10px; }
-        .dictionary-actions button { width: 30px; height: 30px; border: none; border-radius: 5px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dictionary-actions .paste-button { background-color: #2563eb; }
-        .dictionary-actions .paste-button:hover { background-color: #4a8bff; }
-        .dictionary-actions .copy-button { background-color: #2563eb; }
-        .dictionary-actions .copy-button:hover { background-color: #4a8bff; }
-        .dictionary-actions button svg { width: 20px; height: 20px; }
-        .dictionary-submit { width: 36px; height: 36px; background-color: #2563eb; border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .dictionary-submit:hover { background-color: #4a8bff; }
-        .dictionary-submit.delete { background-color: #d32f2f; }
-        .dictionary-submit.delete:hover { background-color: #f44336; }
-        .dictionary-submit svg { width: 20px; height: 20px; }
         .search-bar { margin: 0 0 20px; }
         .search-bar input { width: 100%; padding: 8px; border: none; border-radius: 5px; outline: none; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #21262d; color: #ffffff; box-sizing: border-box; }
         .chat-item { display: flex; align-items: center; padding: 8px 12px; margin-bottom: 8px; border-radius: 8px; background-color: #21262d; cursor: move; user-select: none; }
@@ -133,40 +102,26 @@
         .github-link:hover { background-color: #555; }
         .telegram-icon, .github-icon { width: 20px; height: 20px; margin-right: 8px; }
         .github-icon { fill: white; }
-        .ai-message-actions, .user-message-actions { position: absolute; top: 5px; opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; }
-        .ai-message.rtl .ai-message-actions, .user-message.rtl .user-message-actions { left: -45px; }
-        .ai-message.ltr .ai-message-actions, .user-message.ltr .user-message-actions { right: -45px; }
-        .message:hover .ai-message-actions, .message:hover .user-message-actions, .ai-message.error .ai-message-actions { opacity: 1; pointer-events: auto; }
-        .ai-message-actions .options-button, .user-message-actions .options-button { width: 30px; height: 30px; border-radius: 50%; background-color: #1e40af; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .ai-message-actions .options-button:hover, .user-message-actions .options-button:hover { background-color: #2563eb; }
-        .ai-message-actions .options-button svg, .user-message-actions .options-button svg { width: 20px; height: 20px; }
-        .user-message-context-menu, .ai-message-context-menu { position: absolute; display: none; width: fit-content; white-space: nowrap; background-color: #30363d; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); z-index: 25; padding: 5px; top: 35px; }
-        .user-message.rtl .user-message-context-menu, .ai-message.rtl .ai-message-context-menu { left: 0; }
-        .user-message.ltr .user-message-context-menu, .ai-message.ltr .ai-message-context-menu { right: 0; }
-        .user-message-context-menu.show, .ai-message-context-menu.show { display: block; }
-        .user-message-context-menu button, .ai-message-context-menu button { width: 100%; padding: 8px 12px; background: none; border: none; color: #c9d1d9; cursor: pointer; text-align: right; font-family: 'Iran Yekan', sans-serif; font-size: 14px; border-radius: 5px; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s; }
-        .user-message-context-menu button:hover, .ai-message-context-menu button:hover { background-color: #484f58; }
-        .user-message-context-menu button.copy-action { color: #58a6ff; }
-        .user-message-context-menu button.copy-action:hover { background-color: rgba(88, 166, 255, 0.2); }
-        .user-message-context-menu button.edit-action { color: #FF8300; }
-        .user-message-context-menu button.edit-action:hover { background-color: rgba(255, 131, 0, 0.2); }
-        .user-message-context-menu button.delete-action { color: #f44336; }
-        .user-message-context-menu button.delete-action:hover { background-color: rgba(244, 67, 54, 0.2); }
+        .ai-message-actions { position: absolute; top: 5px; opacity: 0; transition: opacity 0.2s ease-in-out; pointer-events: none; }
+        .ai-message.rtl .ai-message-actions { left: -45px; }
+        .ai-message.ltr .ai-message-actions { right: -45px; }
+        .message:hover .ai-message-actions, .ai-message.error .ai-message-actions { opacity: 1; pointer-events: auto; }
+        .ai-message-actions .options-button { width: 30px; height: 30px; border-radius: 50%; background-color: #1e40af; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .ai-message-actions .options-button:hover { background-color: #2563eb; }
+        .ai-message-actions .options-button svg { width: 20px; height: 20px; }
+        .ai-message-context-menu { position: absolute; display: none; width: fit-content; white-space: nowrap; background-color: #30363d; border-radius: 8px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); z-index: 25; padding: 5px; top: 35px; }
+        .ai-message.rtl .ai-message-context-menu { left: 0; }
+        .ai-message.ltr .ai-message-context-menu { right: 0; }
+        .ai-message-context-menu.show { display: block; }
+        .ai-message-context-menu button { width: 100%; padding: 8px 12px; background: none; border: none; color: #c9d1d9; cursor: pointer; text-align: right; font-family: 'Iran Yekan', sans-serif; font-size: 14px; border-radius: 5px; display: flex; align-items: center; gap: 8px; transition: background-color 0.2s; }
+        .ai-message-context-menu button:hover { background-color: #484f58; }
         .ai-message-context-menu button.regenerate-action { color: #38bdf8; }
         .ai-message-context-menu button.regenerate-action:hover { background-color: rgba(56, 189, 248, 0.2); }
-        .user-message-context-menu button svg, .ai-message-context-menu button svg { width: 16px; height: 16px; fill: none; }
-        .user-message-context-menu button.copy-action .copy-svg { stroke: #58a6ff; }
-        .user-message-context-menu button.edit-action .edit-svg { stroke: #FF8300; }
-        .user-message-context-menu button.delete-action .delete-svg { stroke: #f44336; }
+        .ai-message-context-menu button svg { width: 16px; height: 16px; fill: none; }
         .ai-message-context-menu button.regenerate-action .regenerate-svg { stroke: #38bdf8; }
-        .menu-separator { height: 1px; background-color: #484f58; margin: 4px 8px; }
-        .user-message .edit-textarea { width: calc(100% - 10px); box-sizing: border-box; background-color: #2d6feb; color: white; border: 1px solid white; border-radius: 8px; font-family: 'San Francisco Bold', sans-serif; font-size: 14px; padding: 5px; resize: vertical; }
-        .user-message .edit-actions { display: flex; gap: 5px; margin-top: 5px; justify-content: flex-end; }
-        .user-message .edit-actions button { padding: 4px 8px; width: auto; height: auto; font-size: 12px; }
         .main.reading-mode .top-bar { background-color: #202020; }
         .main.reading-mode .chat-area { padding: 0; padding-top: 62px; scroll-padding-top: 62px; }
-        .main.reading-mode .menu-button, .main.reading-mode .user-message, .main.reading-mode .user-message-actions, .main.reading-mode .ai-message-actions, .main.reading-mode .input-wrapper { display: none !important; }
-        .main.reading-mode .input-area { border-width: 0; padding: 0; }
+        .main.reading-mode .menu-button, .main.reading-mode .ai-message-actions, .main.reading-mode .input-area { display: none !important; }
         .main.reading-mode .ai-message.rtl, .main.reading-mode .ai-message.ltr { width: 90%; margin: 0 auto 10px; padding: 10px 15px; color: #b7b7b7; text-align: right; }
         #notification-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; align-items: center; gap: 10px; }
         .toast-notification { font-family: 'Iran Yekan', sans-serif; padding: 10px 20px; border-radius: 8px; color: #ffffff; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); opacity: 0; transform: translateY(-20px); transition: opacity 0.3s ease, transform 0.3s ease; }
@@ -178,7 +133,7 @@
         .modal-content { background-color: #21262d; padding: 20px; border-radius: 12px; border: 1px solid #30363d; box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5); width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 15px; font-family: 'Iran Yekan', sans-serif; }
         .modal-title { font-size: 18px; color: #c9d1d9; margin: 0; text-align: center; }
         .modal-description { font-size: 13px; color: #8b949e; margin: 0; text-align: center; line-height: 1.5; }
-        #paste-dictionary-textarea { width: 100%; min-height: 150px; padding: 10px; border: 1px solid #30363d; border-radius: 8px; outline: none; resize: vertical; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; box-sizing: border-box; }
+        .modal-textarea { width: 100%; min-height: 150px; padding: 10px; border: 1px solid #30363d; border-radius: 8px; outline: none; resize: vertical; font-size: 14px; font-family: 'Iran Yekan', sans-serif; background-color: #161b22; color: #c9d1d9; box-sizing: border-box; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
         .modal-button { padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; transition: background-color 0.2s; }
         .modal-button.confirm { background-color: #2563eb; color: #ffffff; }
@@ -207,20 +162,11 @@
         
         <div class="input-area">
             <div class="input-wrapper">
-                <textarea placeholder="متنت رو اینجا بنویس..."></textarea>
-                <button class="send-button" onclick="sendMessage()" title="ارسال">
+                <button class="send-button" onclick="continueStory()" title="شروع / ادامه داستان (Ctrl+Enter)" disabled>
                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </button>
-                <button class="url-button" onclick="toggleUrlWindow()" title="وارد کردن لینک">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(-45)">
-                        <path d="M14 12C14 14.7614 11.7614 17 9 17H7C4.23858 17 2 14.7614 2 12C2 9.23858 4.23858 7 7 7H7.5M10 12C10 9.23858 12.2386 7 15 7H17C19.7614 7 22 9.23858 22 12C22 14.7614 19.7614 17 17 17H16.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </button>
-                <div class="url-window" id="url-window">
-                    <input type="text" id="url-input" placeholder="لینک را اینجا وارد کنید...">
-                </div>
             </div>
         </div>
 
@@ -228,6 +174,18 @@
             <div class="sidebar-content" id="sidebar-content">
                 <div class="sidebar-main">
                     <div class="sidebar-actions">
+                        <button class="prompt-button" onclick="openPromptModal()" title="ویرایش پرامپت">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </button>
+                        <button class="upload-button" onclick="triggerUpload()" title="آپلود کتاب">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                        </button>
                         <button class="about-us-button" onclick="toggleAboutUs()" title="درباره ما">
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -238,11 +196,6 @@
                             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                 <path d="M12.9046 3.06005C12.6988 3 12.4659 3 12 3C11.5341 3 11.3012 3 11.0954 3.06005C10.7942 3.14794 10.5281 3.32808 10.3346 3.57511C10.2024 3.74388 10.1159 3.96016 9.94291 4.39272C9.69419 5.01452 9.00393 5.33471 8.36857 5.123L7.79779 4.93281C7.3929 4.79785 7.19045 4.73036 6.99196 4.7188C6.70039 4.70181 6.4102 4.77032 6.15701 4.9159C5.98465 5.01501 5.83376 5.16591 5.53197 5.4677C5.21122 5.78845 5.05084 5.94882 4.94896 6.13189C4.79927 6.40084 4.73595 6.70934 4.76759 7.01551C4.78912 7.2239 4.87335 7.43449 5.04182 7.85566C5.30565 8.51523 5.05184 9.26878 4.44272 9.63433L4.16521 9.80087C3.74031 10.0558 3.52786 10.1833 3.37354 10.3588C3.23698 10.5141 3.13401 10.696 3.07109 10.893C3 11.1156 3 11.3658 3 11.8663C3 12.4589 3 12.7551 3.09462 13.0088C3.17823 13.2329 3.31422 13.4337 3.49124 13.5946C3.69158 13.7766 3.96395 13.8856 4.50866 14.1035C5.06534 14.3261 5.35196 14.9441 5.16236 15.5129L4.94721 16.1584C4.79819 16.6054 4.72367 16.829 4.7169 17.0486C4.70875 17.3127 4.77049 17.5742 4.89587 17.8067C5.00015 18.0002 5.16678 18.1668 5.5 18.5C5.83323 18.8332 5.99985 18.9998 6.19325 19.1041C6.4258 19.2295 6.68733 19.2913 6.9514 19.2831C7.17102 19.2763 7.39456 19.2018 7.84164 19.0528L8.36862 18.8771C9.00393 18.6654 9.6942 18.9855 9.94291 19.6073C10.1159 20.0398 10.2024 20.2561 10.3346 20.4249C10.5281 20.6719 10.7942 20.8521 11.0954 20.94C11.3012 21 11.5341 21 12 21C12.4659 21 12.6988 21 12.9046 20.94C13.2058 20.8521 13.4719 20.6719 13.6654 20.4249C13.7976 20.2561 13.8841 20.0398 14.0571 19.6073C14.3058 18.9855 14.9961 18.6654 15.6313 18.8773L16.1579 19.0529C16.605 19.2019 16.8286 19.2764 17.0482 19.2832C17.3123 19.2913 17.5738 19.2296 17.8063 19.1042C17.9997 18.9999 18.1664 18.8333 18.4996 18.5001C18.8328 18.1669 18.9994 18.0002 19.1037 17.8068C19.2291 17.5743 19.2908 17.3127 19.2827 17.0487C19.2759 16.8291 19.2014 16.6055 19.0524 16.1584L18.8374 15.5134C18.6477 14.9444 18.9344 14.3262 19.4913 14.1035C20.036 13.8856 20.3084 13.7766 20.5088 13.5946C20.6858 13.4337 20.8218 13.2329 20.9054 13.0088C21 12.7551 21 12.4589 21 11.8663C21 11.3658 21 11.1156 20.9289 10.893C20.866 10.696 20.763 10.5141 20.6265 10.3588C20.4721 10.1833 20.2597 10.0558 19.8348 9.80087L19.5569 9.63416C18.9478 9.26867 18.6939 8.51514 18.9578 7.85558C19.1262 7.43443 19.2105 7.22383 19.232 7.01543C19.2636 6.70926 19.2003 6.40077 19.0506 6.13181C18.9487 5.94875 18.7884 5.78837 18.4676 5.46762C18.1658 5.16584 18.0149 5.01494 17.8426 4.91583C17.5894 4.77024 17.2992 4.70174 17.0076 4.71872C16.8091 4.73029 16.6067 4.79777 16.2018 4.93273L15.6314 5.12287C14.9961 5.33464 14.3058 5.0145 14.0571 4.39272C13.8841 3.96016 13.7976 3.74388 13.6654 3.57511C13.4719 3.32808 13.2058 3.14794 12.9046 3.06005Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                        <button class="dictionary-button" onclick="toggleDictionaryWindow()" title="دیکشنری">
-                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M18,2 C19.3807,2 20.5,3.11929 20.5,4.5 L20.5,18.75 C20.5,19.1642 20.1642,19.5 19.75,19.5 L5.5,19.5 C5.5,20.0523 5.94772,20.5 6.5,20.5 L19.75,20.5 C20.1642,20.5 20.5,20.8358 20.5,21.25 C20.5,21.6642 20.1642,22 19.75,22 L6.5,22 C5.11929,22 4,20.8807 4,19.5 L4,4.5 C4,3.11929 5.11929,2 6.5,2 L18,2 Z M18,3.5 L6.5,3.5 C5.94772,3.5 5.5,3.94772 5.5,4.5 L5.5,18 L19,18 L19,4.5 C19,3.94772 18.5523,3.5 18,3.5 Z M16,5 C16.5523,5 17,5.44772 17,6 L17,8 C17,8.55228 16.5523,9 16,9 L8,9 C7.44772,9 7,8.55228 7,8 L7,6 C7,5.44772 7.44772,5 8,5 L16,5 Z M15.5,6.5 L8.5,6.5 L8.5,7.5 L15.5,7.5 L15.5,6.5 Z" fill="#ffffff"></path>
                             </svg>
                         </button>
                         <button class="new-chat-button" onclick="createNewChat()" title="چت جدید">
@@ -274,7 +227,7 @@
                                         <input type="radio" name="ai-model" id="gemini-2.5-flash" value="gemini-2.5-flash">
                                         <label for="gemini-2.5-flash">gemini-2.5-flash</label>
                                     </div>
-                                    <p class="model-description">تعادل بین سرعت و دقت، مناسب اکثر ترجمه‌ها.</p>
+                                    <p class="model-description">تعادل بین سرعت و دقت، مناسب اکثر سناریوها.</p>
                                 </div>
                                 <hr class="model-separator">
                                 <div class="model-option">
@@ -287,43 +240,16 @@
                             </div>
                         </div>
                     </div>
-                    <div class="dictionary-window" id="dictionary-window">
-                        <div class="dictionary-actions">
-                            <button class="paste-button" onclick="pasteDictionary()" title="جایگذاری دیکشنری">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11 5C10.4477 5 10 5.44772 10 6V8H14V6C14 5.44772 13.5523 5 13 5H11ZM15.8293 5C15.4175 3.83481 14.3062 3 13 3H11C9.69378 3 8.58254 3.83481 8.17071 5H6C4.34315 5 3 6.34315 3 8V18C3 19.6569 4.34315 21 6 21H18C19.6569 21 21 19.6569 21 18V8C21 6.34315 19.6569 5 18 5H15.8293ZM16 7V9C16 9.55228 15.5523 10 15 10H9C8.44772 10 8 9.55228 8 9V7H6C5.44772 7 5 7.44772 5 8V18C5 18.5523 5.44772 19 6 19H18C18.5523 19 19 18.5523 19 18V8C19 7.44772 18.5523 7 18 7H16Z" fill="#ffffff"/>
-                                </svg>
-                            </button>
-                            <button class="copy-button" onclick="copyDictionary()" title="کپی کردن دیکشنری">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                    <g>
-                                        <path d="M9 9V6.2002C9 5.08009 9 4.51962 9.21799 4.0918C9.40973 3.71547 9.71547 3.40973 10.0918 3.21799C10.5196 3 11.0801 3 12.2002 3H17.8002C18.9203 3 19.4801 3 19.9079 3.21799C20.2842 3.40973 20.5905 3.71547 20.7822 4.0918C21.0002 4.51962 21.0002 5.07967 21.0002 6.19978V11.7998C21.0002 12.9199 21.0002 13.48 20.7822 13.9078C20.5905 14.2841 20.2839 14.5905 19.9076 14.7822C19.4802 15 18.921 15 17.8031 15H15M9 9H6.2002C5.08009 9 4.51962 9 4.0918 9.21799C3.71547 9.40973 3.40973 9.71547 3.21799 10.0918C3 10.5196 3 11.0801 3 12.2002V17.8002C3 18.9203 3 19.4801 3.21799 19.9079C3.40973 20.2842 3.71547 20.5905 4.0918 20.7822C4.5192 21 5.07899 21 6.19691 21H11.8036C12.9215 21 13.4805 21 13.9079 20.7822C14.2842 20.5905 14.5905 20.2839 14.7822 19.9076C15 19.4802 15 18.921 15 17.8031V15M9 9H11.8002C12.9203 9 13.4801 9 13.9079 9.21799C14.2842 9.40973 14.5905 9.71547 14.7822 10.0918C15 10.5192 15 11.079 15 12.1969L15 15" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                    </g>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="dictionary-entries" id="dictionary-entries"></div>
-                        <div class="dictionary-inputs">
-                            <input type="text" id="dict-input-en" placeholder="انگلیسی">
-                            <span>به</span>
-                            <input type="text" id="dict-input-fa" placeholder="فارسی">
-                        </div>
-                        <button class="dictionary-submit" onclick="submitDictionaryEntry()" title="ثبت">
-                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M11.5003 12H5.41872M5.24634 12.7972L4.24158 15.7986C3.69128 17.4424 3.41613 18.2643 3.61359 18.7704C3.78506 19.21 4.15335 19.5432 4.6078 19.6701C5.13111 19.8161 5.92151 19.4604 7.50231 18.7491L17.6367 14.1886C19.1797 13.4942 19.9512 13.1471 20.1896 12.6648C20.3968 12.2458 20.3968 11.7541 20.1896 11.3351C19.9512 10.8529 19.1797 10.5057 17.6367 9.81135L7.48483 5.24303C5.90879 4.53382 5.12078 4.17921 4.59799 4.32468C4.14397 4.45101 3.77572 4.78336 3.60365 5.22209C3.40551 5.72728 3.67772 6.54741 4.22215 8.18767L5.24829 11.2793C5.34179 11.561 5.38855 11.7019 5.407 11.8459C5.42338 11.9738 5.42321 12.1032 5.40651 12.231C5.38768 12.375 5.34057 12.5157 5.24634 12.7972Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
                     <div class="search-bar">
-                        <input type="text" placeholder="جستجو در چت‌ها..." oninput="searchChats(this.value)">
+                        <input type="text" placeholder="جستجو در کتاب‌ها..." oninput="searchChats(this.value)">
                     </div>
-                    <h2>چت‌های قبلی</h2>
+                    <h2>کتابخانه</h2>
                     <div id="chat-list"></div>
                 </div>
                 <div class="about-us-content" style="display: none;">
                     <h2 class="about-us-title">درباره ما</h2>
                     <p class="about-us-text">
-                        در «Nora»، هدف ما ارائه ترجمه‌ای دقیق، روان و کاربرپسند برای داستان‌ها و متون شماست. ما تلاش می‌کنیم تا با حفظ لحن و احساسات اصلی، تجربه‌ای لذت‌بخش از خواندن به زبان فارسی برایتان فراهم آوریم.
+                        «Nora» دستیار نویسندگی خلاق شماست. با استفاده از یک حافظه هوشمند و مقیاس‌پذیر، نورا به شما کمک می‌کند تا داستان‌های بلند و پیچیده بنویسید، بدون آنکه نگران فراموش شدن جزئیات و خطوط داستانی باشید.
                         <br><br>
                         این یک پروژه اجتماعی است! برای اطلاع از آخرین اخبار و به‌روزرسانی‌ها به کانال تلگرام ما بپیوندید و برای مشارکت در توسعه، مشاهده کد منبع یا گزارش مشکلات از پروژه گیت‌هاب ما دیدن کنید.
                     </p>
@@ -335,7 +261,7 @@
                                <path d="M21 3L10.2 13.8" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </a>
-                        <a href="https://github.com/AsterLywin/Nora" target="_blank" class="github-link">
+                        <a href="https://github.com/AsterLywin/Nora-Novelist" target="_blank" class="github-link">
                             <span>پروژه در گیت‌هاب</span>
                             <svg class="github-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
@@ -347,32 +273,86 @@
         </div>
     </div>
     
-    <div id="paste-dictionary-modal" class="modal-overlay">
+    <div id="prompt-modal" class="modal-overlay">
         <div class="modal-content">
-            <h3 class="modal-title">جایگذاری دیکشنری</h3>
-            <p class="modal-description">متن دیکشنری خود را در کادر زیر جایگذاری کنید. هر ورودی باید در یک خط جدید باشد و با " - " جدا شود.</p>
-            <textarea id="paste-dictionary-textarea" placeholder="English Word - کلمه فارسی"></textarea>
+            <h3 class="modal-title">پرامپت اصلی داستان</h3>
+            <p class="modal-description">ایده اصلی، ژانر، شخصیت‌ها و خط کلی داستان خود را در اینجا وارد کنید. این پرامپت به عنوان راهنمای اصلی برای هوش مصنوعی عمل خواهد کرد.</p>
+            <textarea id="prompt-modal-textarea" class="modal-textarea" placeholder="مثال: یک داستان فانتزی تاریک درباره آخرین بازمانده یک خاندان سلطنتی که در تلاش برای بازپس‌گیری تاج و تخت خود در دنیایی است که توسط هیولاها تسخیر شده..."></textarea>
             <div class="modal-actions">
-                <button id="cancel-paste-btn" class="modal-button cancel">لغو</button>
-                <button id="confirm-paste-btn" class="modal-button confirm">تایید</button>
+                <button id="cancel-prompt-btn" class="modal-button cancel">لغو</button>
+                <button id="confirm-prompt-btn" class="modal-button confirm">تایید</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="regenerate-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title">اصلاح و بازنویسی</h3>
+            <p class="modal-description">دستور خود برای اصلاح این بخش از داستان را وارد کنید. می‌توانید درخواست تغییر لحن، اصلاح کلمات یا تغییر یک رویداد خاص را بدهید.</p>
+            <textarea id="regenerate-modal-textarea" class="modal-textarea" placeholder="مثال: شمشیر یخی با خودکشی شخصیت اصلی از بین نرفت، بلکه به قطعات درخشانی تبدیل شد که در هوا معلق ماندند..."></textarea>
+            <div class="modal-actions">
+                <button id="cancel-regenerate-btn" class="modal-button cancel">لغو</button>
+                <button id="confirm-regenerate-btn" class="modal-button confirm">تایید و بازنویسی</button>
             </div>
         </div>
     </div>
 
     <div id="notification-container"></div>
+    
+    <input type="file" id="import-file-input" style="display: none;" accept=".nora,.json">
 
     <script>
-        const BASE_PROMPT = `تو یه مترجم حرفه‌ای و خلاق هستی که تخصصت ترجمه ناول‌های انگلیسی به فارسیه. فقط و فقط متن ترجمه را به زبان فارسی روان و بدون هیچ کلمه‌ی اضافی از زبان‌های دیگر (مانند انگلیسی یا روسی) ارسال کن.
-لحن و احساسات شخصیت‌ها رو دقیقاً منتقل کن: اگه عصبانی‌ان, شوخ‌طبعن یا غمگینن, اینو توی ترجمه نشون بده. اصطلاحات انگلیسی رو با معادل‌های فارسی جایگزین کن که همون حس رو داشته باشه, نه ترجمه کلمه‌به-کلمه. اگه زمینه متن مشخص نیست, فرض کن از یه ناول داستانی اومده و بهترین لحن رو براش انتخاب کن. و بین هر پاراگراف اگه فاصله نبود حتما یک فاصله بزار و پاراگراف هارا جدا کن. متن دیکشنری زیر رو برسی بکن و اگه معادلش درون متن ناول بود حتما ازش استفاده بکن. دیکشنری:{DICTIONARY_PLACEHOLDER}
-`;
-        const CHUNK_SIZE = 15;
+        let worker;
+        if (window.Worker) {
+            worker = new Worker('./worker.js', { type: 'module' }); 
+
+            const isFirstVisit = !localStorage.getItem('nora_visited_before');
+            if (isFirstVisit) {
+                showNotification('به نورا خوش آمدید! در حال آماده‌سازی اولیه...', 'info');
+                localStorage.setItem('nora_visited_before', 'true');
+            } else {
+                showNotification('دستیار هوشمند در حال بارگذاری...', 'info');
+            }
+            
+            worker.onmessage = function(e) {
+                const { type, payload } = e.data;
+                if (type === 'log' || type === 'error') {
+                    console[type]('[Worker]', payload);
+                } 
+                else if (type === 'ready') {
+                    showNotification('دستیار هوشمند آماده است.', 'success');
+                    document.querySelector('.send-button').disabled = false;
+                } 
+                else if (type === 'context-retrieved') {
+                    handleContextRetrieved(payload);
+                } else if (type === 'add-to-memory-done') {
+                    console.log(`[Worker] Content for message ${payload.messageId} added to memory.`);
+                }
+            };
+            
+            worker.onerror = function(e) {
+                e.preventDefault(); 
+                console.error(`[Worker] Unhandled Error: Line ${e.lineno} in ${e.filename}: ${e.message}`, e);
+                alert(`خطای بحرانی در بارگذاری دستیار:\n\nفایل: ${e.filename}\nشماره خط: ${e.lineno}\n\nپیام: ${e.message}\n\nلطفا از این پیام اسکرین‌شات بگیرید.`);
+                showNotification('خطای بحرانی در بارگذاری دستیار.', 'error');
+                document.querySelector('.send-button').disabled = false;
+            };
+
+        } else {
+            alert('مرورگر شما از Web Workers پشتیبانی نمی‌کند. عملکرد برنامه ممکن است مختل شود.');
+        }
+
         let chats = [];
         try {
-            chats = JSON.parse(localStorage.getItem('chats')) || [];
+            chats = JSON.parse(localStorage.getItem('nora_writer_chats')) || [];
         } catch (e) {
             console.error("Could not parse chats from localStorage:", e);
             chats = [];
         }
+        
+        chats.forEach(chat => {
+            chat.messages = chat.messages.filter(message => message.text !== 'در حال پردازش...');
+        });
         
         let currentChatId = chats.length > 0 ? chats[chats.length - 1].id : 0;
         let readingMode = false;
@@ -380,20 +360,19 @@
         
         let settings = {};
         try {
-            settings = JSON.parse(localStorage.getItem('settings')) || { apiKey: '', selectedModel: 'gemini-2.0-flash' };
+            settings = JSON.parse(localStorage.getItem('nora_writer_settings')) || { apiKey: '', selectedModel: 'gemini-2.0-flash' };
         } catch (e) {
             console.error("Could not parse settings from localStorage:", e);
             settings = { apiKey: '', selectedModel: 'gemini-2.0-flash' };
         }
         
         let isCreatingChat = false;
-        let dictionaryActive = false;
-        let editingDictEntry = null;
         let aboutUsActive = false;
         let messageIdCounter = chats.reduce((max, chat) => { const maxChatId = chat.messages.reduce((m, msg) => Math.max(m, msg.id || 0), 0); return Math.max(max, maxChatId); }, 0) + 1;
-        let isTranslating = false;
-        let activeTranslations = new Map();
+        let isGenerating = false;
+        let activeGeneration = null;
         let saveTimeout = null;
+        let currentRegenerateMessageId = null;
 
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notification-container');
@@ -416,117 +395,6 @@
             }, 3000);
         }
 
-		function query(doc, selectors) {
-			for (const selector of selectors) {
-				const element = doc.querySelector(selector);
-				if (element) return element;
-			}
-			return null;
-		}
-
-		function findNextChapterLink(doc) {
-			const selectors = [
-				'a.next_page', 'a.btn-next', 'a#next_url', 'a#next_chap', 'a#next-chapter', 'a[rel="next"]', 
-				'a[title*="Next Chapter"], a[title*="next chapter"]', 'a.nav-next', 'a.chapter-next', '.nav-links .nav-next a'
-			];
-			for (const selector of selectors) {
-				const el = doc.querySelector(selector);
-				const href = el ? el.getAttribute('href') : null;
-				if (href && !el.matches('.disabled, [disabled]')) return href;
-			}
-			const keywords = ['next', 'next chapter', '>', '»', 'فصل بعد'];
-			const allLinks = doc.querySelectorAll('a');
-			for (const link of allLinks) {
-				const text = link.innerText.trim().toLowerCase();
-				const title = link.title.trim().toLowerCase();
-				if (keywords.some(kw => text.includes(kw) || title.includes(kw))) {
-					const href = link.getAttribute('href');
-					 if(href && href !== '#' && href.trim() !== 'javascript:void(0)') return href;
-				}
-			}
-			return null;
-		}
-
-		function extractData(doc, originalUrl) {
-			if (doc.title.toLowerCase().includes('just a moment...')) {
-				throw new Error('صفحه امنیتی (مانند Cloudflare) شناسایی شد. پروکسی قادر به عبور از آن نیست.');
-			}
-			let title = query(doc, ['h2.book-title a', 'div.fic_title h1', 'h1.tit a', 'a.novel-title', '.novel-link span', 'h1.post-title', 'h1'])?.innerText.trim() || doc.title.split(/–|-|\|/)[0].trim() || 'پیدا نشد';
-			let chapter = query(doc, ['h1.chapter-title', 'div.chp_byauthor h1', 'span.chapter', 'h2 .chr-text', '.chapter-title', '#chapter-heading', 'h2', 'h3'])?.innerText.trim() || 'پیدا نشد';
-			if (chapter.toLowerCase() === title.toLowerCase()) {
-				chapter = query(doc, ['h2', 'h3'])?.innerText.trim() || chapter;
-			}
-			const contentContainer = query(doc, ['div.chapter_content', '#chp_raw', '#article', '#chr-content', '#novel-content', '.entry-content', '.reading-content', 'div[class*="content"]', '#content', 'article']);
-			let contentText = '';
-			if (contentContainer) {
-				const cleanContainer = contentContainer.cloneNode(true);
-				const junkSelectors = ['script', 'style', '.adsbygoogle', '.pubfuture', 'div[id*="ads"]', '.chr-nav', '.chapter-nav', 'div.buttons'];
-				cleanContainer.querySelectorAll(junkSelectors.join(', ')).forEach(el => el.remove());
-				const paragraphs = cleanContainer.querySelectorAll('p');
-				contentText = paragraphs.length > 5 ? Array.from(paragraphs).map(p => p.innerText.trim()).filter(text => text.length > 10).join('\n\n') : cleanContainer.innerText.trim();
-			}
-			const nextHref = findNextChapterLink(doc);
-			let finalNextUrl = null;
-			if (nextHref) {
-				try {
-					finalNextUrl = new URL(nextHref, originalUrl).href;
-				} catch (e) {
-					console.error("Invalid next chapter href found:", nextHref);
-					finalNextUrl = null;
-				}
-			}
-			return { title, chapter, content: contentText || 'متن پیدا نشد.', nextHref: finalNextUrl };
-		}
-		
-        async function extractNovelTextFromUrl(urlString) {
-            const proxies = [
-                `https://api.allorigins.win/raw?url=`,
-                `https://corsproxy.io/?`,
-                `https://cors.sh/?url=`
-            ];
-        
-            const promises = proxies.map(proxy =>
-                fetch(`${proxy}${encodeURIComponent(urlString)}`, {
-                    signal: AbortSignal.timeout(20000)
-                }).then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Proxy returned status ${response.status}`);
-                    }
-                    return response.text();
-                })
-            );
-        
-            const results = await Promise.allSettled(promises);
-            let lastError = null;
-        
-            for (const result of results) {
-                if (result.status === 'fulfilled') {
-                    try {
-                        const htmlContent = result.value;
-                        const doc = new DOMParser().parseFromString(htmlContent, 'text/html');
-                        const { title, chapter, content, nextHref } = extractData(doc, urlString);
-        
-                        if (content && content !== 'متن پیدا نشد.') {
-                            const fullText = `${title}\n\n${chapter}\n\n${content}`;
-                            return { extracted_text: fullText, next_url: nextHref };
-                        }
-                    } catch (extractionError) {
-                        console.error("Extraction failed for a successful fetch:", extractionError);
-                        lastError = extractionError;
-                    }
-                } else {
-                    console.error("Proxy request failed:", result.reason);
-                    lastError = result.reason;
-                }
-            }
-        
-            let errorMsg = 'خطا در استخراج: تمامی سرویس‌های پروکسی پاسخ ندادند یا محتوای معتبری برنگرداندند. ممکن است سایت مقصد در دسترس نباشد یا از سیستم امنیتی قوی استفاده کند.';
-            if (lastError && lastError.message.includes('صفحه امنیتی')) {
-                errorMsg = `خطا: ${lastError.message}`;
-            }
-            throw new Error(errorMsg);
-        }
-        
         async function _callGeminiAPI(fullPrompt, apiKey, modelName, signal) {
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
             const payload = { contents: [{ parts: [{ text: fullPrompt }] }] };
@@ -535,126 +403,325 @@
                 const errorData = await response.json();
                 const errorMessage = errorData?.error?.message || `خطای ناشناخته با کد ${response.status}`;
                 switch (response.status) {
-                    case 400:
-                        throw new Error("درخواست ارسال شده به مدل هوش مصنوعی ناقص یا اشتباه است. این مشکل معمولاً به دلیل وجود کاراکترهای نامعتبر در متن است.");
-                    case 403:
-                        throw new Error("کلید API وارد شده نامعتبر است یا دسترسی لازم را ندارد. لطفاً تنظیمات را بررسی کنید.");
-                    case 429:
-                        throw new Error("تعداد درخواست‌ها به سرور هوش مصنوعی بیش از حد مجاز بوده است. لطفاً کمی صبر کرده و دوباره تلاش کنید.");
-                    case 500:
-                        throw new Error("یک خطای داخلی در سرور هوش مصنوعی رخ داده است. ممکن است متن شما بیش از حد طولانی باشد یا مشکل موقتی باشد.");
-                    case 503:
-                        throw new Error("سرویس هوش مصنوعی در حال حاضر در دسترس نیست یا بیش از حد شلوغ است. لطفاً چند دقیقه دیگر دوباره امتحان کنید.");
-                    default:
-                        throw new Error(`خطای API: ${errorMessage}`);
+                    case 400: throw new Error("درخواست ارسال شده به مدل هوش مصنوعی ناقص یا اشتباه است.");
+                    case 403: throw new Error("کلید API وارد شده نامعتبر است یا دسترسی لازم را ندارد.");
+                    case 429: throw new Error("تعداد درخواست‌ها به سرور هوش مصنوعی بیش از حد مجاز بوده است.");
+                    case 500: throw new Error("یک خطای داخلی در سرور هوش مصنوعی رخ داده است.");
+                    case 503: throw new Error("سرویس هوش مصنوعی در حال حاضر در دسترس نیست.");
+                    default: throw new Error(`خطای API: ${errorMessage}`);
                 }
             }
             const data = await response.json();
-            if (data.candidates && data.candidates.length > 0) {
-                if (data.candidates[0].finishReason === 'MAX_TOKENS') console.warn('Translation stopped due to MAX_TOKENS limit.');
-                if (data.candidates[0].finishReason === 'SAFETY') throw new Error("ترجمه به دلیل فعال شدن فیلترهای ایمنی گوگل متوقف شد. لطفاً متن را بررسی و در صورت نیاز اصلاح کنید.");
+            if (data.candidates && data.candidates[0].finishReason === 'SAFETY') {
+                throw new Error("تولید متن به دلیل فعال شدن فیلترهای ایمنی گوگل متوقف شد.");
             }
-            const translatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (!translatedText) throw new Error("پاسخ دریافتی از API خالی یا نامعتبر است. ممکن است سرور با مشکل مواجه شده باشد.");
-            return translatedText;
+            const generatedText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (!generatedText) throw new Error("پاسخ دریافتی از API خالی یا نامعتبر است.");
+            return generatedText;
         }
+        
+        async function handleContextRetrieved(payload) {
+            const { context, messageId, regenerationInstruction } = payload;
+            const currentChat = chats.find(chat => chat.id === currentChatId);
+            if (!currentChat || !activeGeneration || activeGeneration.messageId !== messageId) return;
 
-        async function _updateSummary(currentSummary, newText, apiKey, modelName, signal) {
-            if (!newText || newText.length < 50) return currentSummary;
-            const summaryPrompt = `You are a story summarizer. Your task is to update a running summary based on the next part of a story. The summary must be in Persian, concise, and under 150 words. Focus on key characters, new plot developments, important items, and changes in setting. Do not add your own opinions. Just integrate the new information into the existing summary.
+            const aiMessageElement = activeGeneration.messageGroup.querySelector('.ai-message');
+            aiMessageElement.firstChild.textContent = 'در حال نوشتن داستان...';
+            
+            let fullPrompt = `${currentChat.prompt}\n\n`;
 
-Here is the story summary so far:
----
-${currentSummary || "This is the beginning of the story."}
----
+            if (context && context.length > 0) {
+                 fullPrompt += `## خلاصه و بخش‌های مرتبط قبلی داستان:\n${context}\n\n`;
+            }
 
-Here is the new part of the story that needs to be added to the summary:
----
-${newText}
----
+            if (currentChat.messages.length > 1) {
+                const lastMessageText = currentChat.messages[currentChat.messages.length - 2].text;
+                fullPrompt += `## آخرین بخش نوشته شده از داستان:\n${lastMessageText}\n\n`;
+            }
+            
+            if(regenerationInstruction){
+                fullPrompt += `## دستورالعمل اصلاحی:\n${regenerationInstruction}\n\n## وظیفه:\nبر اساس دستورالعمل بالا، بخش آخر داستان را بازنویسی کن.\n`;
+            } else if (currentChat.messages.length <= 1) {
+                 fullPrompt += `## وظیفه:\nبر اساس پرامپت اصلی، بخش اول این داستان را بنویس.\n`;
+            } else {
+                 fullPrompt += `## وظیفه:\nادامه داستان را بنویس.\n`;
+            }
 
-Now, provide the new, updated summary in Persian.`;
             try {
-                const newSummary = await _callGeminiAPI(summaryPrompt, apiKey, modelName, signal);
-                return newSummary.trim();
-            } catch (error) {
-                console.error("Failed to update summary:", error);
-                return currentSummary;
+                const generatedText = await _callGeminiAPI(fullPrompt, settings.apiKey, settings.selectedModel, activeGeneration.controller.signal);
+                
+                const messageIndex = currentChat.messages.findIndex(m => m.id === messageId);
+                if (messageIndex !== -1) {
+                    currentChat.messages[messageIndex].text = generatedText;
+                }
+                saveChatsDebounced();
+
+                const directionClass = isRTL(generatedText) ? 'rtl' : 'ltr';
+                aiMessageElement.className = `message ai-message ${directionClass}`;
+                aiMessageElement.innerHTML = '';
+                const messageBdi = document.createElement('bdi');
+                messageBdi.textContent = generatedText;
+                aiMessageElement.appendChild(messageBdi);
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'ai-message-actions';
+                actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="openRegenerateModal(${messageId})" title="اصلاح و بازنویسی"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>اصلاح و بازنویسی</span></button></div>`;
+                aiMessageElement.appendChild(actionsDiv);
+
+                worker.postMessage({ type: 'add-to-memory', payload: { chatId: currentChatId, messageId: messageId, text: generatedText } });
+
+            } catch(error) {
+                handleGenerationError(error, aiMessageElement, messageId);
+            } finally {
+                clearInterval(activeGeneration.timerInterval);
+                isGenerating = false;
+                activeGeneration = null;
+                document.querySelector('.send-button').disabled = false;
             }
         }
-
-        async function translateWithGemini(textToTranslate, dictionary, apiKey, modelName, signal, progressCallback, currentChat, userMessageId) {
-            if (!apiKey) throw new Error("کلید API در تنظیمات وارد نشده است.");
-            let dictText = "دیکشنری خالیه";
-            if (dictionary && Object.keys(dictionary).length > 0) {
-                dictText = Object.entries(dictionary).map(([key, value]) => `"${key}": "${value}"`).join('\n');
+        
+        function handleGenerationError(error, aiMessageElement, messageId) {
+             if (error.name === 'AbortError') {
+                console.log("Generation aborted by user.");
+                return;
             }
+            console.error("Generation failed:", error);
+            aiMessageElement.className = 'message ai-message rtl error';
+            aiMessageElement.innerHTML = '';
+            const errorMessageBdi = document.createElement('bdi');
+            errorMessageBdi.textContent = `خطا: ${error.message}`;
+            aiMessageElement.appendChild(errorMessageBdi);
             
-            const paragraphs = textToTranslate.split('\n\n').filter(p => p.trim() !== '');
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'ai-message-actions';
+            actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="openRegenerateModal(${messageId})" title="اصلاح و بازنویسی"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>اصلاح و بازنویسی</span></button></div>`;
+            aiMessageElement.appendChild(actionsDiv);
 
-            if (paragraphs.length <= CHUNK_SIZE) {
-                if (progressCallback) progressCallback(1, 1);
-                const fullPrompt = BASE_PROMPT.replace('{DICTIONARY_PLACEHOLDER}', dictText) + 
-                                 `\n\n**خلاصه داستان تا اینجای کار (برای درک کلی داستان و شخصیت‌ها):**\n${currentChat.runningSummary || 'هنوز خلاصه‌ای وجود ندارد.'}` +
-                                 `\n\n**متن برای ترجمه:**\n${textToTranslate}`;
-                const translatedText = await _callGeminiAPI(fullPrompt, apiKey, modelName, signal);
-                if (!signal.aborted) {
-                    const newSummary = await _updateSummary(currentChat.runningSummary, textToTranslate, apiKey, modelName, signal);
-                    currentChat.runningSummary = newSummary;
-                }
-                return translatedText;
-            }
-
-            let translatedChunks = [];
-            let lastTranslatedText = '';
-            const totalChunks = Math.ceil(paragraphs.length / CHUNK_SIZE);
-            currentChat.translationCache = currentChat.translationCache || {};
-            currentChat.translationCache[userMessageId] = currentChat.translationCache[userMessageId] || [];
-
-            for (let i = 0; i < totalChunks; i++) {
-                if (signal.aborted) throw new Error("عملیات توسط کاربر لغو شد.");
-                if (progressCallback) progressCallback(i + 1, totalChunks);
-                
-                if (currentChat.translationCache[userMessageId] && currentChat.translationCache[userMessageId][i]) {
-                    translatedChunks.push(currentChat.translationCache[userMessageId][i]);
-                    lastTranslatedText = currentChat.translationCache[userMessageId][i];
-                    continue;
-                }
-                
-                const chunkStart = i * CHUNK_SIZE;
-                const chunkEnd = chunkStart + CHUNK_SIZE;
-                const chunkParagraphs = paragraphs.slice(chunkStart, chunkEnd);
-                const chunkText = chunkParagraphs.join('\n\n');
-
-                const lastSentences = lastTranslatedText ? lastTranslatedText.split(/[.!?؟]+/).slice(-2).join('.').trim() : 'این بخش اول است.';
-                const chunkPrompt = BASE_PROMPT.replace('{DICTIONARY_PLACEHOLDER}', dictText) +
-                                  `\n\n**خلاصه داستان تا اینجای کار (برای درک کلی داستان و شخصیت‌ها):**\n${currentChat.runningSummary || 'هنوز خلاصه‌ای وجود ندارد.'}` +
-                                  `\n\n**بخش پایانی ترجمه قبلی (برای ادامه روان متن):**\n${lastSentences}` +
-                                  `\n\n**متن جدید برای ترجمه (ادامه متن قبلی):**\n${chunkText}`;
-                
-                try {
-                    const translatedChunk = await _callGeminiAPI(chunkPrompt, apiKey, modelName, signal);
-                    currentChat.translationCache[userMessageId][i] = translatedChunk;
+            const currentChat = chats.find(chat => chat.id === currentChatId);
+            if (currentChat) {
+                const msgIndex = currentChat.messages.findIndex(m => m.id === messageId);
+                if (msgIndex > -1) {
+                    currentChat.messages[msgIndex].text = `خطا: ${error.message}`;
                     saveChatsDebounced();
-                    translatedChunks.push(translatedChunk);
-                    lastTranslatedText = translatedChunk;
-                    if (!signal.aborted) {
-                        const newSummary = await _updateSummary(currentChat.runningSummary, chunkText, apiKey, modelName, signal);
-                        currentChat.runningSummary = newSummary;
-                    }
-                } catch (error) {
-                     throw new Error(`خطا در پردازش بخش ${i + 1}: ${error.message}`);
                 }
             }
+        }
+        
+        async function continueStory(instruction = null) {
+            const sendButton = document.querySelector('.send-button');
+            if (isGenerating || sendButton.disabled) {
+                if (sendButton.disabled) {
+                    showNotification("لطفا صبر کنید، دستیار هوشمند هنوز آماده نشده.", "info");
+                }
+                return;
+            }
             
-            delete currentChat.translationCache[userMessageId];
+            const chatArea = document.getElementById('chat-area');
+            if (chats.length === 0) createNewChat();
+            
+            const currentChat = chats.find(chat => chat.id === currentChatId);
+            if (!settings.apiKey) {
+                showNotification("لطفا ابتدا کلید API خود را در تنظیمات وارد کنید.", 'error');
+                return;
+            }
+            if (!currentChat.prompt) {
+                showNotification("لطفا ابتدا یک پرامپت برای داستان خود وارد کنید.", 'error');
+                openPromptModal();
+                return;
+            }
+
+            isGenerating = true;
+            sendButton.disabled = true;
+
+            const isFirstMessage = currentChat.messages.length === 0;
+
+            const messageId = messageIdCounter++;
+            const messageGroup = document.createElement('div');
+            messageGroup.className = 'message-group';
+            messageGroup.setAttribute('data-group-id', messageId);
+
+            const aiMessage = document.createElement('div');
+            aiMessage.className = `message ai-message rtl loading`;
+            aiMessage.setAttribute('data-message-id', messageId);
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'loading-timer';
+            
+            aiMessage.textContent = isFirstMessage ? 'در حال خلق داستان...' : 'در حال جستجو در حافظه... ';
+            aiMessage.appendChild(timerSpan);
+            messageGroup.appendChild(aiMessage);
+            chatArea.appendChild(messageGroup);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            currentChat.messages.push({ id: messageId, type: 'ai', text: 'در حال پردازش...' });
             saveChatsDebounced();
-            return translatedChunks.join('\n\n');
+
+            const controller = new AbortController();
+            let seconds = 0;
+            const timerInterval = setInterval(() => { seconds++; timerSpan.textContent = `(${seconds}s)`; }, 1000);
+            activeGeneration = { messageId, chatId: currentChatId, messageGroup, controller, timerInterval };
+
+            if (isFirstMessage) {
+                handleContextRetrieved({ 
+                    context: '', 
+                    messageId: messageId, 
+                    regenerationInstruction: null 
+                });
+            } else {
+                const lastMessage = currentChat.messages.length > 1 ? currentChat.messages[currentChat.messages.length - 2].text : 'شروع داستان';
+                worker.postMessage({ 
+                    type: 'get-context', 
+                    payload: { 
+                        chatId: currentChatId,
+                        queryText: instruction || `ادامه داستان بعد از: ${lastMessage}`,
+                        messageId: messageId,
+                        regenerationInstruction: instruction
+                    } 
+                });
+            }
+        }
+        
+        async function regenerateStory(instruction) {
+             if (isGenerating || currentRegenerateMessageId === null) return;
+            const sendButton = document.querySelector('.send-button');
+            const chatArea = document.getElementById('chat-area');
+            
+            const currentChat = chats.find(chat => chat.id === currentChatId);
+            if (!settings.apiKey) {
+                showNotification("لطفا ابتدا کلید API خود را در تنظیمات وارد کنید.", 'error');
+                return;
+            }
+           
+            isGenerating = true;
+            sendButton.disabled = true;
+            
+            const messageId = currentRegenerateMessageId; 
+            const messageGroup = document.querySelector(`.message-group[data-group-id="${messageId}"]`);
+            if(!messageGroup) {
+                console.error("Could not find message group to regenerate.");
+                isGenerating = false;
+                sendButton.disabled = false;
+                return;
+            }
+            const aiMessage = messageGroup.querySelector('.ai-message');
+            
+            aiMessage.className = `message ai-message rtl loading`;
+            const timerSpan = document.createElement('span');
+            timerSpan.className = 'loading-timer';
+            aiMessage.textContent = 'در حال جستجو در حافظه... ';
+            aiMessage.appendChild(timerSpan);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            const messageIndex = currentChat.messages.findIndex(m => m.id === messageId);
+            currentChat.messages[messageIndex].text = 'در حال پردازش...';
+            saveChatsDebounced();
+
+            const controller = new AbortController();
+            let seconds = 0;
+            const timerInterval = setInterval(() => { seconds++; timerSpan.textContent = `(${seconds}s)`; }, 1000);
+            activeGeneration = { messageId, chatId: currentChatId, messageGroup, controller, timerInterval };
+
+            const previousMessageText = messageIndex > 0 ? currentChat.messages[messageIndex - 1].text : 'شروع داستان';
+            
+            worker.postMessage({ 
+                type: 'get-context', 
+                payload: { 
+                    chatId: currentChatId,
+                    queryText: instruction, 
+                    messageId: messageId,
+                    regenerationInstruction: instruction
+                } 
+            });
         }
 
-        function saveChats() { localStorage.setItem('chats', JSON.stringify(chats)); }
+        function downloadChat(chatId) {
+            const chat = chats.find(c => c.id === chatId);
+            if (!chat) return;
+
+            const bookData = {
+                title: chat.title,
+                prompt: chat.prompt,
+                messages: chat.messages.map(m => ({ text: m.text }))
+            };
+
+            const blob = new Blob([JSON.stringify(bookData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const safeFileName = chat.title.replace(/[^a-z0-9-_\u0600-\u06FF]/gi, '_');
+            a.download = `${safeFileName || 'Nora_Book'}.nora`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification(`کتاب «${chat.title}» با موفقیت دانلود شد.`, 'success');
+        }
+
+        function triggerUpload() {
+            document.getElementById('import-file-input').click();
+        }
+
+        function importBook(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const bookData = JSON.parse(e.target.result);
+
+                    if (!bookData.title || typeof bookData.prompt === 'undefined' || !Array.isArray(bookData.messages)) {
+                        throw new Error('فرمت فایل کتاب نامعتبر است.');
+                    }
+
+                    const existingIds = chats.map(chat => chat.id);
+                    let newId = 1;
+                    while (existingIds.includes(newId)) newId++;
+                    
+                    let messageIdCounterForImport = messageIdCounter;
+
+                    const newChat = {
+                        id: newId,
+                        title: bookData.title,
+                        prompt: bookData.prompt,
+                        messages: bookData.messages
+                            .filter(msg => msg.text !== 'در حال پردازش...')
+                            .map(msg => ({
+                                id: messageIdCounterForImport++,
+                                type: 'ai',
+                                text: msg.text
+                            }))
+                    };
+                    
+                    messageIdCounter = messageIdCounterForImport;
+
+                    chats.push(newChat);
+                    saveChatsDebounced();
+                    worker.postMessage({ type: 'create-collection', payload: { chatId: newId } });
+
+                    showNotification(`در حال افزودن کتاب «${newChat.title}» به حافظه...`, 'info');
+                    newChat.messages.forEach(message => {
+                        worker.postMessage({
+                            type: 'add-to-memory',
+                            payload: { chatId: newId, messageId: message.id, text: message.text }
+                        });
+                    });
+
+                    loadChat(newId);
+                    renderChatList();
+                    showNotification(`کتاب «${newChat.title}» با موفقیت آپلود شد.`, 'success');
+
+                } catch (err) {
+                    showNotification(`خطا در آپلود کتاب: ${err.message}`, 'error');
+                    console.error("Import failed:", err);
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function saveChats() { localStorage.setItem('nora_writer_chats', JSON.stringify(chats)); }
         function saveChatsDebounced() { clearTimeout(saveTimeout); saveTimeout = setTimeout(() => { saveChats(); console.log("Chat data saved."); }, 500); }
-        function saveSettings() { localStorage.setItem('settings', JSON.stringify(settings)); }
+        function saveSettings() { localStorage.setItem('nora_writer_settings', JSON.stringify(settings)); }
         function isRTL(text) { const rtlRegex = /[\u0600-\u06FF\u0750-\u077F]/; return rtlRegex.test(text); }
         
         function renderChatList() {
@@ -666,7 +733,27 @@ Now, provide the new, updated summary in Persian.`;
                 chatItem.setAttribute('data-chat-id', chat.id);
                 chatItem.setAttribute('draggable', 'true');
                 chatItem.classList.toggle('active', chat.id === currentChatId);
-                chatItem.innerHTML = ` <div class="chat-title">${chat.title}</div> <div class="chat-actions"> <button class="edit-button" onclick="editChatTitle(${chat.id}, this)" title="ویرایش نام"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.4998 5.49994L18.3282 8.32837M3 20.9997L3.04745 20.6675C3.21536 19.4922 3.29932 18.9045 3.49029 18.3558C3.65975 17.8689 3.89124 17.4059 4.17906 16.9783C4.50341 16.4963 4.92319 16.0765 5.76274 15.237L17.4107 3.58896C18.1918 2.80791 19.4581 2.80791 20.2392 3.58896C21.0202 4.37001 21.0202 5.63634 20.2392 6.41739L8.37744 18.2791C7.61579 19.0408 7.23497 19.4216 6.8012 19.7244C6.41618 19.9932 6.00093 20.2159 5.56398 20.3879C5.07171 20.5817 4.54375 20.6882 3.48793 20.9012L3 20.9997Z" stroke="#FF8300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button> <button class="delete-button" onclick="deleteChat(${chat.id}, this)" title="حذف چت"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button> </div> `;
+                chatItem.innerHTML = `
+                    <div class="chat-title">${chat.title}</div>
+                    <div class="chat-actions">
+                        <button class="download-button" onclick="downloadChat(${chat.id})" title="دانلود کتاب">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </button>
+                        <button class="edit-button" onclick="editChatTitle(${chat.id}, this)" title="ویرایش نام">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15.4998 5.49994L18.3282 8.32837M3 20.9997L3.04745 20.6675C3.21536 19.4922 3.29932 18.9045 3.49029 18.3558C3.65975 17.8689 3.89124 17.4059 4.17906 16.9783C4.50341 16.4963 4.92319 16.0765 5.76274 15.237L17.4107 3.58896C18.1918 2.80791 19.4581 2.80791 20.2392 3.58896C21.0202 4.37001 21.0202 5.63634 20.2392 6.41739L8.37744 18.2791C7.61579 19.0408 7.23497 19.4216 6.8012 19.7244C6.41618 19.9932 6.00093 20.2159 5.56398 20.3879C5.07171 20.5817 4.54375 20.6882 3.48793 20.9012L3 20.9997Z" stroke="#FF8300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="delete-button" onclick="deleteChat(${chat.id}, this)" title="حذف کتاب">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke="#d32f2f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>`;
                 chatItem.querySelector('.chat-title').addEventListener('click', () => { loadChat(chat.id); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); });
                 chatItem.addEventListener('dragstart', handleDragStart);
                 chatItem.addEventListener('dragover', handleDragOver);
@@ -676,154 +763,6 @@ Now, provide the new, updated summary in Persian.`;
             });
         }
         
-        async function sendMessage() {
-            if (isTranslating) return;
-            const textarea = document.querySelector('.input-area textarea');
-            const chatArea = document.getElementById('chat-area');
-            const sendButton = document.querySelector('.send-button');
-            const urlInput = document.getElementById('url-input');
-            const messageText = textarea.value.trim();
-            const urlText = urlInput.value.trim();
-            
-            let displayMessage = '';
-            if (urlText) {
-                displayMessage = urlText;
-                textarea.value = '';
-                resetTextareaHeight();
-            } else {
-                displayMessage = messageText;
-            }
-
-            if (!displayMessage) return;
-
-            sendButton.disabled = true;
-            isTranslating = true;
-            if (chats.length === 0) createNewChat();
-
-            const currentChat = chats.find(chat => chat.id === currentChatId);
-            const messageGroup = document.createElement('div');
-            messageGroup.className = 'message-group';
-
-            const userMessageId = messageIdCounter++;
-            messageGroup.setAttribute('data-group-id', userMessageId);
-
-            const userMessage = document.createElement('div');
-            const directionClass = isRTL(displayMessage) ? 'rtl' : 'ltr';
-            userMessage.className = `message user-message ${directionClass}`;
-            userMessage.setAttribute('data-message-id', userMessageId);
-
-            const messageBdi = document.createElement('bdi');
-            messageBdi.textContent = displayMessage;
-            userMessage.appendChild(messageBdi);
-            const userActionsDiv = document.createElement('div');
-            userActionsDiv.className = 'user-message-actions';
-            userActionsDiv.innerHTML = `<button class="options-button" onclick="toggleUserMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="user-message-context-menu"><button class="copy-action" onclick="copyUserMessage(this)" title="کپی"><svg class="copy-svg" viewBox="0 0 24 24" width="18" height="18"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="2"></path></svg><span>کپی</span></button><div class="menu-separator"></div><button class="edit-action" onclick="editUserMessage(${userMessageId})" title="ویرایش"><svg class="edit-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke-width="2"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke-width="2"></path></svg><span>ویرایش</span></button><div class="menu-separator"></div><button class="delete-action" onclick="deleteMessageGroup(${userMessageId})" title="حذف"><svg class="delete-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>حذف</span></button></div>`;
-            userMessage.appendChild(userActionsDiv);
-            messageGroup.appendChild(userMessage);
-
-            const aiMessage = document.createElement('div');
-            aiMessage.className = `message ai-message ${directionClass} loading`;
-            const timerSpan = document.createElement('span');
-            timerSpan.className = 'loading-timer';
-            aiMessage.textContent = 'در حال پردازش... ';
-            aiMessage.appendChild(timerSpan);
-            messageGroup.appendChild(aiMessage);
-
-            chatArea.appendChild(messageGroup);
-            chatArea.scrollTop = chatArea.scrollHeight;
-            currentChat.messages.push({ id: userMessageId, type: 'user', text: displayMessage });
-            currentChat.messages.push({ type: 'ai', text: 'در حال پردازش...' });
-            saveChatsDebounced();
-            textarea.value = '';
-            textarea.style.direction = 'rtl';
-            textarea.style.textAlign = 'right';
-            resetTextareaHeight();
-            updateTextareaAccess();
-
-            const controller = new AbortController();
-            const translationId = Date.now();
-            let seconds = 0;
-            const timerInterval = setInterval(() => { seconds++; timerSpan.textContent = `(${seconds} ثانیه)`; }, 1000);
-            activeTranslations.set(translationId, { chatId: currentChatId, messageGroup, controller, timerInterval });
-            
-            const progressCallback = (current, total) => {
-                if(total > 1) aiMessage.firstChild.textContent = `در حال ترجمه بخش ${current} از ${total}... `;
-            };
-
-            try {
-                let textToTranslate = "";
-                let nextUrlToUpdate = null;
-                if (urlText) {
-                    aiMessage.firstChild.textContent = 'در حال استخراج محتوای ناول... ';
-                    const extractionResult = await extractNovelTextFromUrl(urlText);
-                    textToTranslate = extractionResult.extracted_text;
-                    if (extractionResult.next_url) nextUrlToUpdate = extractionResult.next_url;
-                } else {
-                    textToTranslate = messageText;
-                }
-                aiMessage.firstChild.textContent = 'ترجمه در حال آماده‌سازی... ';
-                const dictionaryObject = currentChat.dictionary.reduce((acc, entry) => { acc[entry.en] = entry.fa; return acc; }, {});
-                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat, userMessageId);
-
-                if (nextUrlToUpdate) {
-                    urlInput.value = nextUrlToUpdate;
-                    const chatToUpdate = chats.find(chat => chat.id === currentChatId);
-                    if (chatToUpdate) chatToUpdate.url = nextUrlToUpdate;
-                }
-
-                const translation = activeTranslations.get(translationId);
-                if (translation) {
-                    const targetChat = chats.find(c => c.id === translation.chatId);
-                    if (targetChat) {
-                        const aiMsgIndex = targetChat.messages.findIndex(m => m.text === 'در حال پردازش...');
-                        if (aiMsgIndex > -1) targetChat.messages[aiMsgIndex].text = translatedText;
-                        if (translation.chatId === currentChatId) {
-                            const aiMsgElement = translation.messageGroup.querySelector('.ai-message');
-                            const aiDirectionClass = isRTL(translatedText) ? 'rtl' : 'ltr';
-                            aiMsgElement.className = `message ai-message ${aiDirectionClass}`;
-                            aiMsgElement.innerHTML = '';
-                            const aiMessageBdi = document.createElement('bdi');
-                            aiMessageBdi.textContent = translatedText;
-                            aiMsgElement.appendChild(aiMessageBdi);
-                            const actionsDiv = document.createElement('div');
-                            actionsDiv.className = 'ai-message-actions';
-                            actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="regenerateMessage(${userMessageId})" title="ساخت مجدد"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>ساخت مجدد</span></button></div>`;
-                            aiMsgElement.appendChild(actionsDiv);
-                        }
-                        saveChatsDebounced();
-                    }
-                }
-            } catch (error) {
-                if (error.name === 'AbortError') console.log("Translation aborted by user action.");
-                else {
-                    const translation = activeTranslations.get(translationId);
-                    if (translation && translation.chatId === currentChatId) {
-                        const aiMsgElement = translation.messageGroup.querySelector('.ai-message');
-                        aiMsgElement.className = 'message ai-message rtl error';
-                        aiMsgElement.innerHTML = '';
-                        const errorMessageBdi = document.createElement('bdi');
-                        errorMessageBdi.textContent = `خطا: ${error.message}`;
-                        aiMsgElement.appendChild(errorMessageBdi);
-                        const actionsDiv = document.createElement('div');
-                        actionsDiv.className = 'ai-message-actions';
-                        actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="regenerateMessage(${userMessageId})" title="ساخت مجدد"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>ساخت مجدد</span></button></div>`;
-                        aiMsgElement.appendChild(actionsDiv);
-                    }
-                    if (currentChat) {
-                        const aiMsgIndex = currentChat.messages.findIndex(m => m.text === 'در حال پردازش...');
-                        if (aiMsgIndex > -1) currentChat.messages[aiMsgIndex].text = `خطا: ${error.message}`;
-                        saveChatsDebounced();
-                    }
-                }
-            } finally {
-                const translation = activeTranslations.get(translationId);
-                if (translation) clearInterval(translation.timerInterval);
-                activeTranslations.delete(translationId);
-                isTranslating = false;
-                sendButton.disabled = false;
-            }
-        }
-
         function loadChat(chatId) {
             currentChatId = chatId;
             const chatArea = document.getElementById('chat-area');
@@ -831,399 +770,66 @@ Now, provide the new, updated summary in Persian.`;
             chatArea.innerHTML = '';
             const chat = chats.find(c => c.id === chatId);
             if (chat) {
-                let currentGroup = null;
-                chat.messages.forEach((message, index) => {
-                    if (message.type === 'user') {
-                        currentGroup = document.createElement('div');
-                        currentGroup.className = 'message-group';
-                        const userMessageId = message.id || index;
-                        currentGroup.setAttribute('data-group-id', userMessageId);
-                        const messageDiv = document.createElement('div');
-                        const directionClass = isRTL(message.text) ? 'rtl' : 'ltr';
-                        messageDiv.className = `message user-message ${directionClass}`;
-                        messageDiv.setAttribute('data-message-id', userMessageId);
-                        const messageBdi = document.createElement('bdi');
-                        messageBdi.textContent = message.text;
-                        messageDiv.appendChild(messageBdi);
-                        const userActionsDiv = document.createElement('div');
-                        userActionsDiv.className = 'user-message-actions';
-                        userActionsDiv.innerHTML = `<button class="options-button" onclick="toggleUserMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="user-message-context-menu"><button class="copy-action" onclick="copyUserMessage(this)" title="کپی"><svg class="copy-svg" viewBox="0 0 24 24" width="18" height="18"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" stroke-width="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke-width="2"></path></svg><span>کپی</span></button><div class="menu-separator"></div><button class="edit-action" onclick="editUserMessage(${userMessageId})" title="ویرایش"><svg class="edit-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke-width="2"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke-width="2"></path></svg><span>ویرایش</span></button><div class="menu-separator"></div><button class="delete-action" onclick="deleteMessageGroup(${userMessageId})" title="حذف"><svg class="delete-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M14 10V17M10 10V17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>حذف</span></button></div>`;
-                        messageDiv.appendChild(userActionsDiv);
-                        currentGroup.appendChild(messageDiv);
-                        chatArea.appendChild(currentGroup);
-                    } else if (message.type === 'ai' && currentGroup) {
-                        const messageDiv = document.createElement('div');
-                        const directionClass = isRTL(message.text) ? 'rtl' : 'ltr';
-                        messageDiv.className = `message ai-message ${directionClass}`;
-                        if (message.text === 'در حال پردازش...') {
-                            messageDiv.classList.add('loading');
-                            messageDiv.textContent = message.text;
-                            const timerSpan = document.createElement('span');
-                            timerSpan.className = 'loading-timer';
-                            let seconds = 0;
-                            const timerInterval = setInterval(() => { seconds++; timerSpan.textContent = `(${seconds} ثانیه)`; }, 1000);
-                            messageDiv.appendChild(timerSpan);
-                            activeTranslations.forEach(trans => { if (trans.chatId === chatId) { trans.messageGroup = currentGroup; trans.timerInterval = timerInterval; } });
-                        } else {
-                            const messageBdi = document.createElement('bdi');
-                            messageBdi.textContent = message.text;
-                            messageDiv.appendChild(messageBdi);
-                            const actionsDiv = document.createElement('div');
-                            actionsDiv.className = 'ai-message-actions';
-                            const userMessageId = chat.messages[index - 1].id;
-                            let buttonsHTML = ``;
-                            if (!message.text.startsWith('خطا:')) {
-                                messageDiv.classList.remove('error');
-                            } else {
-                                messageDiv.classList.add('error');
-                            }
-                            buttonsHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="regenerateMessage(${userMessageId})" title="ساخت مجدد"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>ساخت مجدد</span></button></div>`;
-                            actionsDiv.innerHTML = buttonsHTML;
-                            messageDiv.appendChild(actionsDiv);
-                        }
-                        currentGroup.appendChild(messageDiv);
+                chat.messages.forEach(message => {
+                    const messageGroup = document.createElement('div');
+                    messageGroup.className = 'message-group';
+                    messageGroup.setAttribute('data-group-id', message.id);
+                    
+                    const messageDiv = document.createElement('div');
+                    const directionClass = isRTL(message.text) ? 'rtl' : 'ltr';
+                    messageDiv.className = `message ai-message ${directionClass}`;
+                    messageDiv.setAttribute('data-message-id', message.id);
+
+                    const messageBdi = document.createElement('bdi');
+                    messageBdi.textContent = message.text;
+                    messageDiv.appendChild(messageBdi);
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'ai-message-actions';
+                    if (message.text.startsWith('خطا:')) {
+                        messageDiv.classList.add('error');
                     }
+                    actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="openRegenerateModal(${message.id})" title="اصلاح و بازنویسی"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>اصلاح و بازنویسی</span></button></div>`;
+                    messageDiv.appendChild(actionsDiv);
+                    messageGroup.appendChild(messageDiv);
+                    chatArea.appendChild(messageGroup);
                 });
                 chatTitleMain.textContent = chat.title;
-                const urlInput = document.getElementById('url-input');
-                urlInput.value = chat.url || '';
-                updateTextareaAccess();
                 chatTitleMain.ondblclick = () => editMainChatTitle(chatId);
                 chatTitleMain.oncontextmenu = (e) => { e.preventDefault(); editMainChatTitle(chatId); };
             }
             renderChatList();
         }
 
-        function copyUserMessage(buttonElement) {
-            const userMessageDiv = buttonElement.closest('.user-message');
-            const messageBdi = userMessageDiv.querySelector('bdi');
-            if (messageBdi) navigator.clipboard.writeText(messageBdi.textContent).then(() => showNotification('پیام کاربر کپی شد!', 'success')).catch(err => { console.error('Error copying text: ', err); showNotification('خطا در کپی کردن پیام.', 'error'); });
-        }
-
-        function editUserMessage(userMessageId) {
-            const userMessageDiv = document.querySelector(`.user-message[data-message-id="${userMessageId}"]`);
-            const messageBdi = userMessageDiv.querySelector('bdi');
-            if (!messageBdi || userMessageDiv.querySelector('.edit-container')) return;
-            const currentText = messageBdi.textContent;
-            userMessageDiv.querySelector('.user-message-actions').style.display = 'none';
-            messageBdi.style.display = 'none';
-            const editContainer = document.createElement('div');
-            editContainer.className = 'edit-container';
-            editContainer.innerHTML = `<textarea class="edit-textarea">${currentText}</textarea><div class="edit-actions"><button onclick="cancelEditUserMessage(${userMessageId})">لغو</button><button onclick="saveUserMessage(${userMessageId})">ذخیره و ترجمه مجدد</button></div>`;
-            userMessageDiv.appendChild(editContainer);
-            const textarea = userMessageDiv.querySelector('.edit-textarea');
-            textarea.style.height = 'auto';
-            textarea.style.height = textarea.scrollHeight + 'px';
-            textarea.focus();
-        }
-
-        function cancelEditUserMessage(userMessageId) {
-            const userMessageDiv = document.querySelector(`.user-message[data-message-id="${userMessageId}"]`);
-            const editContainer = userMessageDiv.querySelector('.edit-container');
-            if (editContainer) userMessageDiv.removeChild(editContainer);
-            userMessageDiv.querySelector('bdi').style.display = 'block';
-            userMessageDiv.querySelector('.user-message-actions').style.display = '';
-        }
-
-        async function saveUserMessage(userMessageId) {
-            const userMessageDiv = document.querySelector(`.user-message[data-message-id="${userMessageId}"]`);
-            const textarea = userMessageDiv.querySelector('.edit-textarea');
-            const newText = textarea.value.trim();
-            if (!newText) { showNotification('پیام نمی‌تواند خالی باشد.', 'error'); return; }
-            const currentChat = chats.find(chat => chat.id === currentChatId);
-            const userMessageIndex = currentChat.messages.findIndex(msg => msg.id === userMessageId);
-            currentChat.messages[userMessageIndex].text = newText;
-            saveChatsDebounced();
-            userMessageDiv.querySelector('bdi').textContent = newText;
-            cancelEditUserMessage(userMessageId); 
-            await regenerateMessage(userMessageId);
-        }
-
-        async function regenerateMessage(userMessageId) {
-            if (isTranslating) return;
-            const currentChat = chats.find(chat => chat.id === currentChatId);
-            if (!currentChat) return;
-            const userMessageIndex = currentChat.messages.findIndex(msg => msg.id === userMessageId);
-            if (userMessageIndex === -1 || !currentChat.messages[userMessageIndex + 1]) return;
-
-            const userMessage = currentChat.messages[userMessageIndex];
-            const aiMessageIndex = userMessageIndex + 1;
-            const textFromUserMessage = userMessage.text;
-            const messageGroupElement = document.querySelector(`.user-message[data-message-id="${userMessageId}"]`).closest('.message-group');
-            const aiMessageElement = messageGroupElement.querySelector('.ai-message');
-
-            isTranslating = true;
-            const directionClass = isRTL(textFromUserMessage) ? 'rtl' : 'ltr';
-            aiMessageElement.className = `message ai-message loading ${directionClass}`;
-            aiMessageElement.innerHTML = 'در حال آماده‌سازی... <span class="loading-timer">(0 ثانیه)</span>';
-            const timerSpan = aiMessageElement.querySelector('.loading-timer');
-            let seconds = 0;
-            const timerInterval = setInterval(() => { seconds++; timerSpan.textContent = `(${seconds} ثانیه)`; }, 1000);
-
-            currentChat.messages[aiMessageIndex].text = 'در حال پردازش...';
-            saveChatsDebounced();
-
-            const controller = new AbortController();
-            const translationId = Date.now();
-            activeTranslations.set(translationId, { chatId: currentChatId, messageGroup: messageGroupElement, controller, timerInterval });
-
-            const progressCallback = (current, total) => {
-                if (total > 1) aiMessageElement.firstChild.textContent = `در حال ترجمه بخش ${current} از ${total}... `;
-            };
-
-            try {
-                let textToTranslate = "";
-                const isUrl = textFromUserMessage.startsWith('http://') || textFromUserMessage.startsWith('https://');
-                if (isUrl) {
-                    aiMessageElement.firstChild.textContent = 'در حال استخراج مجدد محتوا... ';
-                    const extractionResult = await extractNovelTextFromUrl(textFromUserMessage);
-                    textToTranslate = extractionResult.extracted_text;
-                } else {
-                    textToTranslate = textFromUserMessage;
-                }
-
-                aiMessageElement.firstChild.textContent = 'ترجمه در حال بازسازی... ';
-                const dictionaryObject = currentChat.dictionary.reduce((acc, entry) => { acc[entry.en] = entry.fa; return acc; }, {});
-                const translatedText = await translateWithGemini(textToTranslate, dictionaryObject, settings.apiKey, settings.selectedModel, controller.signal, progressCallback, currentChat, userMessageId);
-
-                if (activeTranslations.has(translationId)) {
-                    const translatedDirectionClass = isRTL(translatedText) ? 'rtl' : 'ltr';
-                    aiMessageElement.className = `message ai-message ${translatedDirectionClass}`;
-                    aiMessageElement.innerHTML = '';
-                    const messageBdi = document.createElement('bdi');
-                    messageBdi.textContent = translatedText;
-                    aiMessageElement.appendChild(messageBdi);
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'ai-message-actions';
-                    actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="regenerateMessage(${userMessageId})" title="ساخت مجدد"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>ساخت مجدد</span></button></div>`;
-                    aiMessageElement.appendChild(actionsDiv);
-                    currentChat.messages[aiMessageIndex].text = translatedText;
-                    saveChatsDebounced();
-                }
-            } catch (error) {
-                if (error.name === 'AbortError') console.log('Regeneration aborted.');
-                else if (activeTranslations.has(translationId)) {
-                    aiMessageElement.className = 'message ai-message rtl error';
-                    aiMessageElement.innerHTML = '';
-                    const errorMessageBdi = document.createElement('bdi');
-                    errorMessageBdi.textContent = `خطا: ${error.message}`;
-                    aiMessageElement.appendChild(errorMessageBdi);
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'ai-message-actions';
-                    actionsDiv.innerHTML = `<button class="options-button" onclick="toggleAiMessageMenu(event, this)"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="ai-message-context-menu"><button class="regenerate-action" onclick="regenerateMessage(${userMessageId})" title="ساخت مجدد"><svg class="regenerate-svg" viewBox="0 0 24 24" width="18" height="18"><path d="M23 4v6h-6" stroke-width="2"></path><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" stroke-width="2"></path></svg><span>ساخت مجدد</span></button></div>`;
-                    aiMessageElement.appendChild(actionsDiv);
-                    currentChat.messages[aiMessageIndex].text = `خطا: ${error.message}`;
-                    saveChatsDebounced();
-                }
-            } finally {
-                if(activeTranslations.has(translationId)) clearInterval(activeTranslations.get(translationId).timerInterval);
-                activeTranslations.delete(translationId);
-                isTranslating = false;
-            }
-        }
-        
         function handleDragStart(e) { draggedChat = this; this.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', this.getAttribute('data-chat-id')); }
         function handleDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
         function handleDrop(e) { e.preventDefault(); const targetChat = this; const draggedId = parseInt(draggedChat.getAttribute('data-chat-id')); const targetId = parseInt(targetChat.getAttribute('data-chat-id')); if (draggedId !== targetId) { const draggedIndex = chats.findIndex(chat => chat.id === draggedId); const targetIndex = chats.findIndex(chat => chat.id === targetId); const [draggedItem] = chats.splice(draggedIndex, 1); chats.splice(targetIndex, 0, draggedItem); saveChatsDebounced(); renderChatList(); } }
         function handleDragEnd() { this.classList.remove('dragging'); draggedChat = null; }
-        function createNewChat() { if (isCreatingChat) return; isCreatingChat = true; const existingIds = chats.map(chat => chat.id); let newId = 1; while (existingIds.includes(newId)) newId++; const newChat = { id: newId, title: `چت ${newId}`, messages: [], url: '', dictionary: [], runningSummary: '' }; chats.push(newChat); currentChatId = newChat.id; saveChatsDebounced(); renderChatList(); loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); isCreatingChat = false; }
-        function clearChat() { const chatArea = document.getElementById('chat-area'); chatArea.innerHTML = ''; const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.messages = []; currentChat.runningSummary = ''; saveChatsDebounced(); } }
+        function createNewChat() { if (isCreatingChat) return; isCreatingChat = true; const existingIds = chats.map(chat => chat.id); let newId = 1; while (existingIds.includes(newId)) newId++; const newChat = { id: newId, title: `کتاب جدید ${newId}`, messages: [], prompt: '' }; chats.push(newChat); currentChatId = newChat.id; saveChatsDebounced(); renderChatList(); loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); isCreatingChat = false; worker.postMessage({ type: 'create-collection', payload: { chatId: newId } }); }
+        function clearChat() { const chatArea = document.getElementById('chat-area'); chatArea.innerHTML = ''; const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.messages = []; saveChatsDebounced(); worker.postMessage({ type: 'clear-collection', payload: { chatId: currentChat.id } }); } }
         function searchChats(query) { const chatItems = document.querySelectorAll('.chat-item'); chatItems.forEach(item => { const chatId = parseInt(item.getAttribute('data-chat-id')); const chat = chats.find(c => c.id === chatId); const title = chat.title.toLowerCase(); if (title.includes(query.toLowerCase())) item.classList.remove('hidden'); else item.classList.add('hidden'); }); }
         function findScrollAnchor() { const chatArea = document.getElementById('chat-area'); const chatAreaRect = chatArea.getBoundingClientRect(); const messageGroups = chatArea.querySelectorAll('.message-group'); let firstVisibleGroup = null; for (const group of messageGroups) { const groupRect = group.getBoundingClientRect(); if (groupRect.bottom > chatAreaRect.top && groupRect.top < chatAreaRect.bottom) { firstVisibleGroup = group; break; } } if (!firstVisibleGroup) return null; const groupRect = firstVisibleGroup.getBoundingClientRect(); const distanceScrolledIntoElement = chatAreaRect.top - groupRect.top; let scrollPercentage = 0; if (distanceScrolledIntoElement > 0) scrollPercentage = distanceScrolledIntoElement / groupRect.height; return { element: firstVisibleGroup, percentage: scrollPercentage }; }
         function restoreScrollPosition(anchor) { if (!anchor || !anchor.element) return; const chatArea = document.getElementById('chat-area'); const element = anchor.element; const elementTopRelativeToContainer = element.offsetTop; const newPixelOffset = element.offsetHeight * anchor.percentage; chatArea.scrollTop = elementTopRelativeToContainer + newPixelOffset; }
-        function toggleReadingMode() {
-            const main = document.getElementById('main');
-            const readingModeButton = document.getElementById('reading-mode-button');
-            const anchor = findScrollAnchor();
-            readingMode = !readingMode;
-            
-            function enterFullScreen() {
-                const elem = document.documentElement;
-                if (elem.requestFullscreen) {
-                    elem.requestFullscreen();
-                } else if (elem.mozRequestFullScreen) {
-                    elem.mozRequestFullScreen();
-                } else if (elem.webkitRequestFullscreen) {
-                    elem.webkitRequestFullscreen();
-                } else if (elem.msRequestFullscreen) {
-                    elem.msRequestFullscreen();
-                }
-            }
-
-            function exitFullScreen() {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitExitFullscreen) {
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) {
-                    document.msExitFullscreen();
-                }
-            }
-
-            const eyeIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52159 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-            const eyeSlashIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99902 3L20.999 21M9.8433 9.91364C9.32066 10.4536 8.99902 11.1892 8.99902 12C8.99902 13.6569 10.3422 15 11.999 15C12.8215 15 13.5667 14.669 14.1086 14.133M6.49902 6.64715C4.59972 7.90034 3.15305 9.78394 2.45703 12C3.73128 16.0571 7.52159 19 11.9992 19C13.9881 19 15.8414 18.4194 17.3988 17.4184M10.999 5.04939C11.328 5.01673 11.6617 5 11.9992 5C16.4769 5 20.2672 7.94291 21.5414 12C21.2607 12.894 20.8577 13.7338 20.3522 14.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
-            readingModeButton.innerHTML = readingMode ? eyeIconSVG : eyeSlashIconSVG;
-            readingModeButton.title = readingMode ? 'خروج از حالت مطالعه' : 'حالت مطالعه';
-            readingModeButton.classList.toggle('active', readingMode);
-            main.classList.toggle('reading-mode', readingMode);
-
-            if (readingMode) {
-                enterFullScreen();
-            } else {
-                exitFullScreen();
-            }
-            
-            requestAnimationFrame(() => {
-                restoreScrollPosition(anchor);
-            });
-        }
-        function deleteMessageGroup(messageId) { const chatArea = document.getElementById('chat-area'); const messageElement = chatArea.querySelector(`.user-message[data-message-id="${messageId}"]`); if (!messageElement) return; activeTranslations.forEach((trans, id) => { if (trans.messageGroup.getAttribute('data-group-id') == messageId) trans.controller.abort(); }); const messageGroup = messageElement.closest('.message-group'); chatArea.removeChild(messageGroup); const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { const messageIndex = currentChat.messages.findIndex(msg => msg.id === messageId); if (messageIndex !== -1) { currentChat.messages.splice(messageIndex, 2); saveChatsDebounced(); } } }
-        function toggleUrlWindow() { const urlWindow = document.getElementById('url-window'); const urlInput = document.getElementById('url-input'); const currentChat = chats.find(chat => chat.id === currentChatId); if (urlWindow.classList.contains('open')) { saveUrl(); urlWindow.classList.remove('open'); updateTextareaAccess(); } else { urlWindow.classList.add('open'); urlInput.value = currentChat && currentChat.url ? currentChat.url : ''; urlInput.focus(); } }
-        function saveUrl() { const urlInput = document.getElementById('url-input'); const link = urlInput.value.trim(); const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.url = link; saveChatsDebounced(); } }
-        function updateTextareaAccess() { const urlInput = document.getElementById('url-input'); const textarea = document.querySelector('.input-area textarea'); const urlButton = document.querySelector('.url-button'); const sendButton = document.querySelector('.send-button'); if (textarea.value.trim()) { textarea.disabled = false; textarea.placeholder = 'متنت رو اینجا بنویس...'; urlButton.disabled = true; sendButton.disabled = false; } else if (urlInput.value.trim()) { textarea.disabled = true; textarea.placeholder = 'وقتی لینک وارد شده، نمی‌تونی اینجا بنویسی!'; urlButton.disabled = false; sendButton.disabled = false; } else { textarea.disabled = false; textarea.placeholder = 'متنت رو اینجا بنویس...'; urlButton.disabled = false; sendButton.disabled = true; } }
+        function toggleReadingMode() { const main = document.getElementById('main'); const readingModeButton = document.getElementById('reading-mode-button'); const anchor = findScrollAnchor(); readingMode = !readingMode; main.classList.toggle('reading-mode', readingMode); function enterFullScreen() { const elem = document.documentElement; if (elem.requestFullscreen) { elem.requestFullscreen(); } else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } } function exitFullScreen() { if (document.exitFullscreen) { document.exitFullscreen(); } else if (document.webkitExitFullscreen) { document.webkitExitFullscreen(); } } const eyeIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.0007 12C15.0007 13.6569 13.6576 15 12.0007 15C10.3439 15 9.00073 13.6569 9.00073 12C9.00073 10.3431 10.3439 9 12.0007 9C13.6576 9 15.0007 10.3431 15.0007 12Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.0012 5C7.52354 5 3.73326 7.94288 2.45898 12C3.73324 16.0571 7.52159 19 12.0012 19C16.4788 19 20.2691 16.0571 21.5434 12C20.2691 7.94291 16.4788 5 12.0012 5Z" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; const eyeSlashIconSVG = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99902 3L20.999 21M9.8433 9.91364C9.32066 10.4536 8.99902 11.1892 8.99902 12C8.99902 13.6569 10.3422 15 11.999 15C12.8215 15 13.5667 14.669 14.1086 14.133M6.49902 6.64715C4.59972 7.90034 3.15305 9.78394 2.45703 12C3.73128 16.0571 7.52159 19 11.9992 19C13.9881 19 15.8414 18.4194 17.3988 17.4184M10.999 5.04939C11.328 5.01673 11.6617 5 11.9992 5C16.4769 5 20.2672 7.94291 21.5414 12C21.2607 12.894 20.8577 13.7338 20.3522 14.5" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; readingModeButton.innerHTML = readingMode ? eyeIconSVG : eyeSlashIconSVG; readingModeButton.title = readingMode ? 'خروج از حالت مطالعه' : 'حالت مطالعه'; if (readingMode) { enterFullScreen(); } else { exitFullScreen(); } requestAnimationFrame(() => { restoreScrollPosition(anchor); }); }
         function toggleSettingsWindow() { const settingsWindow = document.getElementById('settings-window'); const apiKeyInput = document.getElementById('api-key-input'); if (settingsWindow.classList.contains('open')) { saveSettingsData(); settingsWindow.classList.remove('open'); } else { settingsWindow.classList.add('open'); apiKeyInput.value = settings.apiKey || ''; if(document.getElementById(settings.selectedModel)) document.getElementById(settings.selectedModel).checked = true; apiKeyInput.focus(); document.querySelectorAll('.radio-wrapper').forEach(wrapper => { wrapper.addEventListener('click', function() { const input = this.querySelector('input[type="radio"]'); if (input && !input.checked) { input.checked = true; saveSettingsData(); } }); }); } }
         function saveSettingsData() { const apiKeyInput = document.getElementById('api-key-input'); const selectedModelInput = document.querySelector('input[name="ai-model"]:checked'); settings.apiKey = apiKeyInput.value.trim(); if(selectedModelInput) settings.selectedModel = selectedModelInput.value; saveSettings(); }
-        
-        function toggleDictionaryWindow() {
-            if (chats.length === 0) createNewChat();
-            dictionaryActive = !dictionaryActive;
-            const dictionaryWindow = document.getElementById('dictionary-window');
-            const dictionaryButton = document.querySelector('.dictionary-button');
-            dictionaryButton.classList.toggle('active', dictionaryActive);
-            if (dictionaryActive) {
-                dictionaryWindow.classList.add('open');
-                renderDictionary();
-            } else {
-                dictionaryWindow.classList.remove('open');
-            }
-        }
-        
         function toggleAboutUs() { aboutUsActive = !aboutUsActive; const sidebarMain = document.querySelector('.sidebar-main'); const aboutUsContent = document.querySelector('.about-us-content'); const aboutUsButton = document.querySelector('.about-us-button'); aboutUsButton.classList.toggle('active', aboutUsActive); if (aboutUsActive) { sidebarMain.style.display = 'none'; aboutUsContent.style.display = 'flex'; } else { sidebarMain.style.display = 'block'; aboutUsContent.style.display = 'none'; } }
-        
-        function renderDictionary() {
-            const entriesDiv = document.getElementById('dictionary-entries');
-            const currentChat = chats.find(chat => chat.id === currentChatId);
-            const fragment = document.createDocumentFragment();
-            if (currentChat && currentChat.dictionary) {
-                currentChat.dictionary.forEach((entry, index) => {
-                    const entryDiv = document.createElement('div');
-                    entryDiv.className = 'dictionary-entry';
-                    entryDiv.innerHTML = `<div class="text"><span>${entry.en}</span> <span>${entry.fa}</span></div><button class="delete-dict-btn" title="حذف"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M18 6L17.1991 18.0129C17.129 19.065 17.0939 19.5911 16.8667 19.99C16.6666 20.3412 16.3648 20.6235 16.0011 20.7998C15.588 21 15.0607 21 14.0062 21H9.99377C8.93927 21 8.41202 21 7.99889 20.7998C7.63517 20.6235 7.33339 20.3412 7.13332 19.99C6.90607 19.5911 6.871 19.065 6.80086 18.0129L6 6M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>`;
-                    entryDiv.querySelector('.text').onclick = () => editDictionaryEntry(index);
-                    entryDiv.querySelector('.delete-dict-btn').onclick = () => deleteDictionaryEntry(index);
-                    fragment.appendChild(entryDiv);
-                });
-            }
-            entriesDiv.innerHTML = '';
-            entriesDiv.appendChild(fragment);
-        }
-
-        function submitDictionaryEntry() { if (chats.length === 0) createNewChat(); const enInput = document.getElementById('dict-input-en'); const faInput = document.getElementById('dict-input-fa'); const enText = enInput.value.trim(); const faText = faInput.value.trim(); enInput.classList.remove('error'); faInput.classList.remove('error'); if (!enText || !faText) { if (!enText) enInput.classList.add('error'); if (!faText) faInput.classList.add('error'); return; } const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { if (editingDictEntry !== null) { currentChat.dictionary[editingDictEntry] = { en: enText, fa: faText }; editingDictEntry = null; } else { currentChat.dictionary.push({ en: enText, fa: faText }); } saveChatsDebounced(); renderDictionary(); enInput.value = ''; faInput.value = ''; } }
-        function editDictionaryEntry(index) { const currentChat = chats.find(chat => chat.id === currentChatId); const entry = currentChat.dictionary[index]; const enInput = document.getElementById('dict-input-en'); const faInput = document.getElementById('dict-input-fa'); enInput.value = entry.en; faInput.value = entry.fa; editingDictEntry = index; }
-        function deleteDictionaryEntry(index) { const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat) { currentChat.dictionary.splice(index, 1); saveChatsDebounced(); renderDictionary(); } }
-        function copyDictionary() { const currentChat = chats.find(chat => chat.id === currentChatId); if (currentChat && currentChat.dictionary.length > 0) { const text = `Dictionary ID: DICT_001\n` + currentChat.dictionary.map(entry => `${entry.en} - ${entry.fa}`).join('\n'); navigator.clipboard.writeText(text).then(() => showNotification('دیکشنری با موفقیت کپی شد.', 'success')).catch(err => showNotification('خطا در کپی کردن دیکشنری.', 'error')); } }
-        function showPasteDictionaryModal() { const pasteModal = document.getElementById('paste-dictionary-modal'); const pasteTextarea = document.getElementById('paste-dictionary-textarea'); pasteTextarea.value = ''; pasteModal.style.display = 'flex'; pasteTextarea.focus(); }
-        function hidePasteDictionaryModal() { const pasteModal = document.getElementById('paste-dictionary-modal'); pasteModal.style.display = 'none'; }
-        function pasteDictionary() { const currentChat = chats.find(chat => chat.id === currentChatId); if (!currentChat) return; showPasteDictionaryModal(); }
-        function processDictionaryText(text, currentChat) { const lines = text.trim().split('\n'); let startIndex = 0; if (lines[0].startsWith('Dictionary ID: DICT_001')) startIndex = 1; const separators = [' - ', ' به ']; let entriesAdded = false; for (let i = startIndex; i < lines.length; i++) { const line = lines[i].trim(); if (!line) continue; for (const separator of separators) { if (line.includes(separator)) { const [en, fa] = line.split(separator); const enTrimmed = en?.trim(); const faTrimmed = fa?.trim(); if (enTrimmed && faTrimmed) { currentChat.dictionary.push({ en: enTrimmed, fa: faTrimmed }); entriesAdded = true; } break; } } } if (entriesAdded) { saveChatsDebounced(); renderDictionary(); } else showNotification('هیچ جفت معتبر کلمه-ترجمه‌ای در متن واردشده پیدا نشد.', 'error'); }
         function editMainChatTitle(chatId) { const chatTitleMain = document.getElementById('chat-title-main'); const currentTitle = chatTitleMain.textContent; chatTitleMain.innerHTML = `<input type="text" value="${currentTitle}" />`; const input = chatTitleMain.querySelector('input'); input.focus(); input.setSelectionRange(input.value.length, input.value.length); input.onblur = () => saveMainChatTitle(chatId, input.value); input.onkeypress = (e) => { if (e.key === 'Enter') saveMainChatTitle(chatId, input.value); }; }
-        function saveMainChatTitle(chatId, newTitle) { const chatTitleMain = document.getElementById('chat-title-main'); const chat = chats.find(c => c.id === chatId); const isDuplicate = chats.some(c => c.id !== chatId && c.title === newTitle); if (isDuplicate) chatTitleMain.textContent = chat.title; else { const finalTitle = newTitle.trim() || `چت ${chatId}`; chatTitleMain.textContent = finalTitle; if (chat) { chat.title = finalTitle; saveChatsDebounced(); renderChatList(); } } }
+        function saveMainChatTitle(chatId, newTitle) { const chatTitleMain = document.getElementById('chat-title-main'); const chat = chats.find(c => c.id === chatId); const isDuplicate = chats.some(c => c.id !== chatId && c.title === newTitle); if (isDuplicate) { chatTitleMain.textContent = chat.title; } else { const finalTitle = newTitle.trim() || `کتاب ${chatId}`; chatTitleMain.textContent = finalTitle; if (chat) { chat.title = finalTitle; saveChatsDebounced(); renderChatList(); } } }
         function editChatTitle(chatId, button) { const chatItem = button.closest('.chat-item'); const chatTitle = chatItem.querySelector('.chat-title'); const currentTitle = chatTitle.textContent; chatTitle.innerHTML = `<input type="text" value="${currentTitle}" />`; const input = chatTitle.querySelector('input'); input.focus(); input.setSelectionRange(input.value.length, input.value.length); input.addEventListener('blur', function() { saveChatTitle(chatId, chatItem, input.value); }); input.addEventListener('keypress', function(e) { if (e.key === 'Enter') saveChatTitle(chatId, chatItem, input.value); }); }
-        function saveChatTitle(chatId, chatItem, newTitle) { const chatTitle = chatItem.querySelector('.chat-title'); const chat = chats.find(c => c.id === chatId); const isDuplicate = chats.some(c => c.id !== chatId && c.title === newTitle); if (isDuplicate) chatTitle.textContent = chat.title; else { const finalTitle = newTitle.trim() || `چت ${chatId}`; chatTitle.textContent = finalTitle; if (chat) { chat.title = finalTitle; saveChatsDebounced(); document.getElementById('chat-title-main').textContent = finalTitle; } } }
-        function deleteChat(chatId, button) { const chatItem = button.closest('.chat-item'); if (chatItem.classList.contains('delete-pending')) { chats = chats.filter(chat => chat.id !== chatId); saveChatsDebounced(); renderChatList(); activeTranslations.forEach((trans, id) => { if (trans.chatId === chatId) trans.controller.abort(); }); if (currentChatId === chatId) { const chatArea = document.getElementById('chat-area'); const chatTitleMain = document.getElementById('chat-title-main'); chatArea.innerHTML = ''; if (chats.length === 0) chatTitleMain.textContent = ''; else { currentChatId = chats[chats.length - 1].id; loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); } } } else { document.querySelectorAll('.chat-item.delete-pending').forEach(item => { item.classList.remove('delete-pending'); item.style.border = ''; item.style.boxShadow = ''; }); chatItem.classList.add('delete-pending'); chatItem.style.border = '2px solid #d32f2f'; chatItem.style.boxShadow = 'inset 0 0 10px rgba(211, 47, 47, 0.5)'; } }
+        function saveChatTitle(chatId, chatItem, newTitle) { const chatTitle = chatItem.querySelector('.chat-title'); const chat = chats.find(c => c.id === chatId); const isDuplicate = chats.some(c => c.id !== chatId && c.title === newTitle); if (isDuplicate) { chatTitle.textContent = chat.title; } else { const finalTitle = newTitle.trim() || `کتاب ${chatId}`; chatTitle.textContent = finalTitle; if (chat) { chat.title = finalTitle; saveChatsDebounced(); document.getElementById('chat-title-main').textContent = finalTitle; } } }
+        function deleteChat(chatId, button) { const chatItem = button.closest('.chat-item'); if (chatItem.classList.contains('delete-pending')) { chats = chats.filter(chat => chat.id !== chatId); saveChatsDebounced(); renderChatList(); worker.postMessage({ type: 'delete-collection', payload: { chatId } }); if (activeGeneration && activeGeneration.chatId === chatId) { activeGeneration.controller.abort(); } if (currentChatId === chatId) { const chatArea = document.getElementById('chat-area'); const chatTitleMain = document.getElementById('chat-title-main'); chatArea.innerHTML = ''; if (chats.length === 0) chatTitleMain.textContent = ''; else { currentChatId = chats[chats.length - 1].id; loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); } } } else { document.querySelectorAll('.chat-item.delete-pending').forEach(item => { item.classList.remove('delete-pending'); item.style.border = ''; item.style.boxShadow = ''; }); chatItem.classList.add('delete-pending'); chatItem.style.border = '2px solid #d32f2f'; chatItem.style.boxShadow = 'inset 0 0 10px rgba(211, 47, 47, 0.5)'; } }
         function toggleMenu() { const sidebar = document.getElementById('sidebar'); const menuButton = document.querySelector('.menu-button'); const isOpen = sidebar.classList.contains('open'); sidebar.classList.toggle('open'); menuButton.classList.toggle('hidden', !isOpen); if (!isOpen && aboutUsActive) toggleAboutUs(); }
-        const textarea = document.querySelector('.input-area textarea');
-        const initialTextareaHeight = '50px';
-        function adjustTextareaHeight() {
-            const textarea = document.querySelector('.input-area textarea');
-            textarea.style.height = initialTextareaHeight;
-            textarea.style.height = `${textarea.scrollHeight}px`;
-        }
-        function resetTextareaHeight() {
-            const textarea = document.querySelector('.input-area textarea');
-            textarea.style.height = initialTextareaHeight;
-        }
-        
-        function toggleUserMessageMenu(event, buttonElement) {
-            event.stopPropagation();
-            const menu = buttonElement.nextElementSibling;
-            const isCurrentlyShown = menu.classList.contains('show');
-            document.querySelectorAll('.user-message-context-menu.show, .ai-message-context-menu.show').forEach(openMenu => {
-                openMenu.classList.remove('show');
-            });
-            if (!isCurrentlyShown) {
-                menu.classList.add('show');
-            }
-        }
-        
-        function toggleAiMessageMenu(event, buttonElement) {
-            event.stopPropagation();
-            const menu = buttonElement.nextElementSibling;
-            const isCurrentlyShown = menu.classList.contains('show');
-            document.querySelectorAll('.user-message-context-menu.show, .ai-message-context-menu.show').forEach(openMenu => {
-                openMenu.classList.remove('show');
-            });
-            if (!isCurrentlyShown) {
-                menu.classList.add('show');
-            }
-        }
-        
-        textarea.addEventListener('input', () => { adjustTextareaHeight(); textarea.classList.remove('error'); updateTextareaAccess(); const text = textarea.value; if (text.trim() === '') { textarea.style.direction = 'rtl'; textarea.style.textAlign = 'right'; } else if (isRTL(text)) { textarea.style.direction = 'rtl'; textarea.style.textAlign = 'right'; } else { textarea.style.direction = 'ltr'; textarea.style.textAlign = 'left'; } });
-        document.addEventListener('click', function(e) { const sidebar = document.getElementById('sidebar'); const menuButton = document.querySelector('.menu-button'); const urlWindow = document.getElementById('url-window'); const urlButton = document.querySelector('.url-button'); const settingsWindow = document.getElementById('settings-window'); const settingsButton = document.querySelector('.settings-button'); const dictionaryWindow = document.getElementById('dictionary-window'); const dictionaryButton = document.querySelector('.dictionary-button'); const chatTitleMain = document.getElementById('chat-title-main'); const isSidebarOpen = sidebar.classList.contains('open'); const isUrlWindowOpen = urlWindow.classList.contains('open'); const isSettingsWindowOpen = settingsWindow.classList.contains('open'); const isDictionaryWindowOpen = dictionaryWindow.classList.contains('open'); if (isSidebarOpen && !sidebar.contains(e.target) && !menuButton.contains(e.target)) { sidebar.classList.remove('open'); menuButton.classList.remove('hidden'); if (aboutUsActive) toggleAboutUs(); } if (isUrlWindowOpen && !urlWindow.contains(e.target) && !urlButton.contains(e.target)) { saveUrl(); urlWindow.classList.remove('open'); updateTextareaAccess(); } if (isSettingsWindowOpen && !settingsWindow.contains(e.target) && !settingsButton.contains(e.target)) { saveSettingsData(); settingsWindow.classList.remove('open'); } if (isDictionaryWindowOpen && !dictionaryWindow.contains(e.target) && !dictionaryButton.contains(e.target)) { dictionaryWindow.classList.remove('open'); dictionaryActive = false; dictionaryButton.classList.remove('active'); } document.querySelectorAll('.chat-item.delete-pending').forEach(item => { if (!item.contains(e.target)) { item.classList.remove('delete-pending'); item.style.border = ''; item.style.boxShadow = ''; } }); if (chatTitleMain.querySelector('input') && !chatTitleMain.contains(e.target)) { const input = chatTitleMain.querySelector('input'); saveMainChatTitle(currentChatId, input.value); } 
-            document.querySelectorAll('.user-message-context-menu.show, .ai-message-context-menu.show').forEach(openMenu => {
-                if (!openMenu.closest('.message').contains(e.target)) {
-                    openMenu.classList.remove('show');
-                }
-            });
-        });
-        document.querySelector('.input-area textarea').addEventListener('keydown', function(e) { if (e.ctrlKey && e.key === 'Enter') sendMessage(); });
-        document.getElementById('url-input').addEventListener('input', updateTextareaAccess);
-        document.addEventListener('DOMContentLoaded', () => {
-            renderChatList();
-            if (chats.length > 0) {
-                loadChat(currentChatId);
-                setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0);
-            } else {
-                updateTextareaAccess();
-            }
-            resetTextareaHeight();
-        
-            const pasteModal = document.getElementById('paste-dictionary-modal');
-            const confirmPasteBtn = document.getElementById('confirm-paste-btn');
-            const cancelPasteBtn = document.getElementById('cancel-paste-btn');
-        
-            confirmPasteBtn.onclick = () => {
-                const pasteTextarea = document.getElementById('paste-dictionary-textarea');
-                const text = pasteTextarea.value;
-                const currentChat = chats.find(chat => chat.id === currentChatId);
-                if (text.trim() !== '' && currentChat) {
-                    processDictionaryText(text, currentChat);
-                }
-                hidePasteDictionaryModal();
-            };
-            
-            cancelPasteBtn.onclick = hidePasteDictionaryModal;
-        
-            pasteModal.addEventListener('click', (e) => {
-                if (e.target === pasteModal) {
-                    hidePasteDictionaryModal();
-                }
-            });
-        });
-
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./service-worker.js')
-            .then(registration => {
-              console.log('Nora PWA ServiceWorker registered successfully.');
-            })
-            .catch(err => {
-              console.error('ServiceWorker registration failed: ', err);
-            });
-        });
-      }
+        function toggleAiMessageMenu(event, buttonElement) { event.stopPropagation(); const menu = buttonElement.nextElementSibling; const isCurrentlyShown = menu.classList.contains('show'); document.querySelectorAll('.ai-message-context-menu.show').forEach(openMenu => { openMenu.classList.remove('show'); }); if (!isCurrentlyShown) { menu.classList.add('show'); } }
+        function openPromptModal() { if (chats.length === 0) createNewChat(); let currentChat = chats.find(c => c.id === currentChatId); const modal = document.getElementById('prompt-modal'); const textarea = document.getElementById('prompt-modal-textarea'); textarea.value = currentChat.prompt || ''; modal.style.display = 'flex'; textarea.focus(); }
+        function closePromptModal() { document.getElementById('prompt-modal').style.display = 'none'; }
+        function savePrompt() { const currentChat = chats.find(c => c.id === currentChatId); if(currentChat) { const textarea = document.getElementById('prompt-modal-textarea'); currentChat.prompt = textarea.value.trim(); saveChatsDebounced(); showNotification('پرامپت ذخیره شد.', 'success'); } closePromptModal(); }
+        function openRegenerateModal(messageId) { currentRegenerateMessageId = messageId; const modal = document.getElementById('regenerate-modal'); const textarea = document.getElementById('regenerate-modal-textarea'); textarea.value = ''; modal.style.display = 'flex'; textarea.focus(); }
+        function closeRegenerateModal() { document.getElementById('regenerate-modal').style.display = 'none'; currentRegenerateMessageId = null; }
+        function confirmRegeneration() { const textarea = document.getElementById('regenerate-modal-textarea'); const instruction = textarea.value.trim(); if (instruction) { regenerateStory(instruction); } else { showNotification('لطفا یک دستورالعمل برای بازنویسی وارد کنید.', 'error'); } closeRegenerateModal(); }
+        document.addEventListener('click', function(e) { const sidebar = document.getElementById('sidebar'); const menuButton = document.querySelector('.menu-button'); const settingsWindow = document.getElementById('settings-window'); const settingsButton = document.querySelector('.settings-button'); const chatTitleMain = document.getElementById('chat-title-main'); const isSidebarOpen = sidebar.classList.contains('open'); const isSettingsWindowOpen = settingsWindow.classList.contains('open'); if (isSidebarOpen && !sidebar.contains(e.target) && !menuButton.contains(e.target)) { sidebar.classList.remove('open'); menuButton.classList.remove('hidden'); if (aboutUsActive) toggleAboutUs(); } if (isSettingsWindowOpen && !settingsWindow.contains(e.target) && !settingsButton.contains(e.target)) { saveSettingsData(); settingsWindow.classList.remove('open'); } document.querySelectorAll('.chat-item.delete-pending').forEach(item => { if (!item.contains(e.target)) { item.classList.remove('delete-pending'); item.style.border = ''; item.style.boxShadow = ''; } }); if (chatTitleMain.querySelector('input') && !chatTitleMain.contains(e.target)) { const input = chatTitleMain.querySelector('input'); saveMainChatTitle(currentChatId, input.value); } document.querySelectorAll('.ai-message-context-menu.show').forEach(openMenu => { if (!openMenu.closest('.message').contains(e.target)) { openMenu.classList.remove('show'); } }); });
+        document.addEventListener('keydown', function(e) { if (e.ctrlKey && e.key === 'Enter') continueStory(); });
+        document.addEventListener('DOMContentLoaded', () => { renderChatList(); if (chats.length > 0) { loadChat(currentChatId); setTimeout(() => { document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight; }, 0); } document.getElementById('confirm-prompt-btn').onclick = savePrompt; document.getElementById('cancel-prompt-btn').onclick = closePromptModal; document.getElementById('prompt-modal').onclick = (e) => { if (e.target.id === 'prompt-modal') closePromptModal(); }; document.getElementById('confirm-regenerate-btn').onclick = confirmRegeneration; document.getElementById('cancel-regenerate-btn').onclick = closeRegenerateModal; document.getElementById('regenerate-modal').onclick = (e) => { if (e.target.id === 'regenerate-modal') closeRegenerateModal(); }; document.getElementById('import-file-input').addEventListener('change', importBook); });
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./service-worker.js?v=' + new Date().getTime()).then(registration => { console.log('Nora PWA ServiceWorker registered successfully.'); }).catch(err => { console.error('ServiceWorker registration failed: ', err); }); }); }
     </script>
 </body>
 </html>
